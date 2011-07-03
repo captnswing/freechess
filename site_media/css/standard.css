@@ -1,0 +1,40 @@
+table, td, tr, body {
+	font-size: 11px;
+	font-family: Helvetica, Arial, Verdana;
+}
+
+td {
+	font: 10px Verdana;
+	padding: 0 10px 0 0;
+	line-height: 20px;
+	border-bottom: #ddd;
+	border-width: 0 0 1px 0;
+	border-style: none none solid none;
+}
+
+h3 {
+	margin-top: 3em;
+}
+
+a:link {
+	color: olive;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:visited {
+	color: gray;
+	text-decoration: none;
+}
+
+table tr.odd {
+	background:#eee
+}
+
+th {
+	text-align:left;
+	padding: 0 15px 0 0;
+}
