@@ -5,7 +5,7 @@ from freechess.stats import stats, images
 from freechess.data import views
 
 # from http://www.arthurkoziel.com/2009/01/15/passing-mediaurl-djangos-500-error-view/
-handler500 = 'myproject.stats.util.server_error'
+handler500 = 'freechess.stats.util.server_error'
 
 # index
 urlpatterns = patterns('',
@@ -24,7 +24,6 @@ urlpatterns += patterns('',
 urlpatterns += patterns('',
     url(r'deletedata/$', views.deletedata, name='stats-deletedata'),
     url(r'uploaddata/$', views.upload_file, name='stats-uploadfile'),
-#    url(r'importdata/$', views.importdata, name='stats-dataadmin'),
 )
 
 # a mechanism to use the django dev server as server for media files as well

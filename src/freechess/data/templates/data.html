@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block content %}
-<form enctype="multipart/form-data" method="post" action="{% url chess-uploadfile %}">
+<form enctype="multipart/form-data" method="post" action="{% url stats-uploadfile %}">
 {{ form.as_p }}
 <input type="submit" value="Submit" />
 </form>

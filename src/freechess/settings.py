@@ -61,6 +61,8 @@ ROOT_URLCONF = 'freechess.urls'
 import os
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 
+FIXTURE_DIRS = (os.path.join(PROJECT_PATH, "data", "fixtures"),)
+
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, "templates"),
     os.path.join(PROJECT_PATH, "stats/templates"),
@@ -80,17 +82,23 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'freechess.data',
     'freechess.stats',
 )
 
 # database configuration
-DATABASE_ENGINE = 'mysql'
-DATABASE_NAME = 'captnswing'
-DATABASE_USER = 'root'
-DATABASE_PASSWORD = 'mp109'
-DATABASE_HOST = ''
-DATABASE_PORT = ''
-
+import sys
+DATABASES = {
+    'default': {
+        # https://docs.djangoproject.com/en/dev/ref/settings/#test-name
+        'ENGINE': 'sqlite3' if 'test' in sys.argv else 'django.db.backends.mysql',
+        'NAME': 'captnswing',
+        'USER': 'root',
+        'PASSWORD': 'mp109',
+        'HOST': '',
+        'PORT': '',
+    }
+}
 
 # a directory "site_media" that contains the static media files should exist there
 DEV_DOCROOT = os.path.join(PROJECT_PATH, "site_media")

@@ -45,10 +45,6 @@ class TestViews(TestCase):
         response = self.client.get(reverse('stats-deletedata'))
         self.failUnlessEqual(response.status_code, 200)
 
-    def test_dataadmin(self):
-        response = self.client.get(reverse('stats-dataadmin'))
-        self.failUnlessEqual(response.status_code, 200)
-
 
 class TestImage(TestCase):
     """tests the Google Chart API graph"""

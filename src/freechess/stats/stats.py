@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
+from django.http import HttpResponseServerError
 from django.template import RequestContext
 from freechess.stats.models import ChessGame
 from dateutil.relativedelta import relativedelta
@@ -14,6 +15,8 @@ def chessStats(request):
     # some general variables
     player = 'captnswing'
     allgames = ChessGame.objects.all()
+    if not allgames:
+        return HttpResponseServerError("No data")
     firstgame = allgames[0]
     lastgame = allgames.latest()
     number_of_games = ChessGame.objects.count()
