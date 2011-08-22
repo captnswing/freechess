@@ -1,13 +1,20 @@
 #-*- coding: utf-8 -*-
 import datetime
 from GChartWrapper import VerticalBarStack, LineXY
+from django.template.context import RequestContext
 from freechess.stats.models import ChessGame
 from django.http import HttpResponse
 from dateutil.relativedelta import relativedelta
+from django.shortcuts import render_to_response
 from util import createhist
 from dateutil import rrule
 
+def eloHistImgHighCharts(request):
+    return render_to_response('elohist.html', context_instance=RequestContext(request))
+
+
 def create_eloHistImg():
+    global games_per_day
     if not ChessGame.objects.count():
         raise Exception, 'no data in database. try running importgames first.'
     y, m = datetime.date.today().timetuple()[:2]

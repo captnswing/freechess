@@ -69,10 +69,12 @@ TEMPLATE_DIRS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.core.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.contrib.auth.context_processors.auth',
+    'django.contrib.messages.context_processors.messages',
 )
 
 DATABASE_SUPPORTS_TRANSACTIONS = False
@@ -82,6 +84,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.staticfiles',
     'freechess.data',
     'freechess.stats',
 )
@@ -100,13 +103,15 @@ DATABASES = {
     }
 }
 
-# a directory "site_media" that contains the static media files should exist there
-DEV_DOCROOT = os.path.join(PROJECT_PATH, "site_media")
-
 # debug
 DEBUG = True
 TEMPLATE_DEBUG = True
 
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_PATH, "site_media"),
+)
+
+STATIC_URL = 'static/'
 #  _            _                      __
 # | |_ ___  ___| |_    ___ ___  _ __  / _|
 # | __/ _ \/ __| __|  / __/ _ \| '_ \| |_
