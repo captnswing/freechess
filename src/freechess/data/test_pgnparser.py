@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 import datetime
-from freechess.stats.pgnparser import parsePGNgame, parsePGNfile
+from freechess.data.pgnparser import parsePGNgame, parsePGNfile
 import unittest
 import time
 

@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
-from django.http import HttpResponseServerError, HttpResponse
+from django.http import HttpResponseServerError
 from django.template import RequestContext
 from freechess.stats.models import ChessGame
 from dateutil.relativedelta import relativedelta
@@ -41,22 +41,22 @@ def chessStats(request):
         # result tallies
         # retrieve a list of all results interactively using
         # sorted(list(set([ ' '.join(elem.values()[0].split()[1:]) for elem in ChessGame.objects.all().values('comment') ])))
-        win_comments = [ ('resigns', 'opponent resigns'), \
-                         ('forfeits on time', 'opponent forfeits on time'), \
-                         ('checkmated', 'opponent checkmated'), \
+        win_comments = [ ('resigns', 'opponent resigns'),
+                         ('forfeits on time', 'opponent forfeits on time'),
+                         ('checkmated', 'opponent checkmated'),
                          ('forfeits by disconnection', 'opponent forfeits by disconnection'), ]
 
-        lost_comments = [ (player + ' resigns', player + ' resigns'), \
-                          (player + ' forfeits on time', player + ' forfeits on time'), \
-                          (player + ' checkmated', player + ' checkmated'), \
+        lost_comments = [ (player + ' resigns', player + ' resigns'),
+                          (player + ' forfeits on time', player + ' forfeits on time'),
+                          (player + ' checkmated', player + ' checkmated'),
                           (player + ' forfeits by disconnection', player + ' forfeits by disconnection'), ]
 
-        draw_comments = [ ('player has mating material', 'neither player has mating material'), \
-                          ('drawn by repetition', 'game drawn by repetition'), \
-                          ('ran out of time and %s has no material to mate' % player, 'opponent ran out of time and %s can\'t mate' % player), \
-                          ('%s ran out of time and' % player, '%s ran out of time and opponent can\'t mate' % player), \
-                          ('drawn because both players ran out of time', 'game drawn because both players ran out of time'), \
-                          ('drawn by stalemate', 'game drawn by stalemate'), \
+        draw_comments = [ ('player has mating material', 'neither player has mating material'),
+                          ('drawn by repetition', 'game drawn by repetition'),
+                          ('ran out of time and %s has no material to mate' % player, 'opponent ran out of time and %s can\'t mate' % player),
+                          ('%s ran out of time and' % player, '%s ran out of time and opponent can\'t mate' % player),
+                          ('drawn because both players ran out of time', 'game drawn because both players ran out of time'),
+                          ('drawn by stalemate', 'game drawn by stalemate'),
                           ('drawn by mutual agreement', 'game drawn by mutual agreement'), ]
 
         won_tally = []
