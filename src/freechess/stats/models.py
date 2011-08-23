@@ -9,6 +9,8 @@ class GameManager(models.Manager):
         return super(GameManager, self).get_query_set().filter((Q(self_white=True) & Q(result="0-1")) | (Q(self_white=False) & Q(result="1-0")))
     def drawn_games(self):
         return super(GameManager, self).get_query_set().filter(result__contains="1/2")
+    def elo_trend(self):
+        return super(GameManager, self).get_query_set().values_list('game_nr', 'date', 'self_elo')
 
 class ChessGame(models.Model):
     game_nr = models.IntegerField(primary_key=True)

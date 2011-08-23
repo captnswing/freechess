@@ -20,7 +20,7 @@ def chessStats(request):
     y, m = today.timetuple()[:2]
 
     # some basic stats
-    elotrend =  allgames.values_list('game_nr', 'date', 'self_elo')
+    elotrend =  ChessGame.objects.elo_trend()
     all_elos = list(allgames.values_list('self_elo'))
     stats = {
         "startdate": datetime.date(y, m, 1) + relativedelta(months=-9),
