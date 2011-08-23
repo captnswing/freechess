@@ -87,6 +87,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'freechess.data',
     'freechess.stats',
+    'freechess.api',
 )
 
 # database configuration

@@ -11,10 +11,10 @@ class TestMediaRootConfiguration(TestCase):
 
     def test_BluePrint(self):
         """test for the presence of a Blueprint CSS file"""
-        blueprintpath = os.path.join(settings.MEDIA_URL, 'css/blueprint/screen.css')
+        blueprintpath = os.path.join(settings.STATIC_URL, 'css/blueprint/screen.css')
         msg = """\n
 blueprint '%s' not found
-ser till att settings.MEDIA_URL och settings.DEV_DOCROOT är rätt konfigurerad
+ser till att settings.STATIC_URL är rätt konfigurerad
 servern skall kunna svara på %s
 """ % (os.path.basename(blueprintpath), blueprintpath)
         response = self.client.get(blueprintpath)
@@ -22,10 +22,10 @@ servern skall kunna svara på %s
 
     def test_jQuery(self):
         """test for the presence of a jQuery file"""
-        jquerypath = os.path.join(settings.MEDIA_URL, 'js/jquery.media.pack.js')
+        jquerypath = os.path.join(settings.STATIC_URL, 'js/jquery.media.pack.js')
         msg = """\n
 jquery '%s' not found
-ser till att settings.MEDIA_URL och settings.DEV_DOCROOT är rätt konfigurerad
+ser till att settings.STATIC_URL är rätt konfigurerad
 django dev server skall kunna svara på %s
 """ % (os.path.basename(jquerypath), jquerypath)
         response = self.client.get(jquerypath)

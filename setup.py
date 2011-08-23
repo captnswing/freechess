@@ -24,6 +24,7 @@ setup(
     install_requires=[
         'django == 1.3',
         'mysql-python',
+        'django-piston',
         # libraries for testing
         'nose',
         'coverage',

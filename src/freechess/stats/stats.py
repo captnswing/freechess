@@ -1,15 +1,10 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, HttpResponse
 from django.template import RequestContext
 from freechess.stats.models import ChessGame
 from dateutil.relativedelta import relativedelta
 import datetime
-
-def pythonversion(request):
-    import sys
-    from django.http import HttpResponse
-    return HttpResponse(sys.version)
 
 def chessStats(request):
     # some general variables
