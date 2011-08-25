@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block extraheaders %}
+<title>chess stats data admin</title>
+<link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
+{% endblock %}
+
+{% block heading %}
+<h2>chess stats data admin</h2>
+<h4>upload Portable Game Notation (PGN) files</h4>
+{% endblock %}
+
+{% block content %}
+<div id="fileupload">
+    <form method="post" action="" enctype="multipart/form-data">
+        <div class="fileupload-buttonbar">
+            {% csrf_token %}
+            <label class="fileinput-button">
+                <span>Add files...</span>
+                <input type="file" name="file" multiple>
+            </label>
+            <button type="submit" class="start">Start upload</button>
+            <button type="reset" class="cancel">Cancel upload</button>
+            <button type="button" class="delete">Delete files</button>
+        </div>
+    </form>
+    <div class="fileupload-content">
+        <table class="files"></table>
+        <div class="fileupload-progressbar"></div>
+    </div>
+</div>
+{% upload_js %}
+<script src="{{ STATIC_URL }}jquery.iframe-transport.js"></script>
+<script src="{{ STATIC_URL }}jquery.fileupload.js"></script>
+<script src="{{ STATIC_URL }}jquery.fileupload-ui.js"></script>
+<script src="{{ STATIC_URL }}application.js"></script>
+{% endblock %}
