@@ -2,7 +2,7 @@
 {% load raw %}
 
 {% block extraheaders %}
-<title>Django jQuery File Upload Example</title>
+<title>PGNfile</title>
 <link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
 <link rel="stylesheet" href="{{ STATIC_URL }}style.css">
 {% endblock %}
@@ -14,7 +14,7 @@
             {% csrf_token %}
             <label class="fileinput-button">
                 <span>Add files...</span>
-                <input type="file" name="file" multiple>
+                <input type="file" name="pgnfile" multiple>
             </label>
             <button type="submit" class="start">Start upload</button>
             <button type="reset" class="cancel">Cancel upload</button>
@@ -48,7 +48,7 @@
     <td class="cancel"><button>Cancel</button></td>
 </tr>
 </script>
-    
+
 <script id="template-download" type="text/x-jquery-tmpl">
 <tr class="template-download{{if error}} ui-state-error{{/if}}">
     {{if error}}
@@ -73,14 +73,18 @@
             {{/if}}
         </td>
     {{else}}
-        <td class="preview">
-            success
-        </td>
-        <td class="name">
-            success
-        </td>
-        <td class="size">${sizef}</td>
-        <td colspan="2"></td>
+    <td class="preview">
+        test
+    </td>
+    <td class="name">
+        <a href="${url}">${name}</a>
+    </td>
+    <td class="size">
+        size ${sizef}
+    </td>
+    <td colspan="2">
+        test
+    </td>
     {{/if}}
     <td class="delete">
         <button data-type="${delete_type}" data-url="${delete_url}">Delete</button>
