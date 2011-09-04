@@ -33,7 +33,3 @@ class ChessGame(models.Model):
         list_display = ('game_nr', 'date', 'self_white', 'opponent_name', 'self_elo', 'opponent_elo', 'timecontrol', 'result', 'comment')
         ordering = ['game_nr']
 
-class PGNfile(models.Model):
-    player = models.CharField(max_length=255)
-    pgnfile = models.FileField(upload_to='stats', max_length=255)
-
