@@ -1,5 +1,5 @@
 /*
- * jQuery File Upload User Interface Plugin 5.0.14
+ * jQuery File Upload User Interface Plugin 5.0.13
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2010, Sebastian Tschan
@@ -278,10 +278,8 @@
                     $(this).unbind('load');
                     that._revokeObjectURL(url);
                     callback(that._scaleImage(img[0], options));
-                });
-                if (url) {
-                    img.prop('src', url);
-                } else {
+                }).prop('src', url);
+                if (!url) {
                     this._loadFile(file, function (url) {
                         img.prop('src', url);
                     });

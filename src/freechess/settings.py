@@ -45,7 +45,7 @@ SECRET_KEY = '=s6(fo!)zvh0qo#3)mxo3_c!oaw(jo&plyr!mtpens)-h8j*51'
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.load_template_source',
+    'django.template.loaders.app_directories.Loader',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -65,7 +65,6 @@ FIXTURE_DIRS = (os.path.join(PROJECT_PATH, "data", "fixtures"),)
 
 TEMPLATE_DIRS = (
     os.path.join(PROJECT_PATH, "templates"),
-    os.path.join(PROJECT_PATH, "stats/templates"),
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -112,7 +111,7 @@ STATICFILES_DIRS = (
     os.path.join(PROJECT_PATH, "site_media"),
 )
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 #  _            _                      __
 # | |_ ___  ___| |_    ___ ___  _ __  / _|
 # | __/ _ \/ __| __|  / __/ _ \| '_ \| |_

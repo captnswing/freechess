@@ -1,13 +1,10 @@
 {% extends "base.html" %}
+{% load upload_tags %}
 
 {% block extraheaders %}
-<title>chess stats data admin</title>
+<title>Django jQuery File Upload Example</title>
 <link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
-{% endblock %}
-
-{% block heading %}
-<h2>chess stats data admin</h2>
-<h4>upload Portable Game Notation (PGN) files</h4>
+<link rel="stylesheet" href="{{ STATIC_URL }}style.css">
 {% endblock %}
 
 {% block content %}
