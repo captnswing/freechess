@@ -1,6 +1,6 @@
 #-*- coding: utf-8 -*-
 import datetime
-from freechess.fileupload.pgnparser import parsePGNgame, parsePGNfile
+from freechess.pgnparser import parsePGNgame, parsePGNfile, getGames
 import unittest
 import time
 
@@ -67,35 +67,35 @@ Qxb3 26. Qxg7#
 class TestPGNParser(unittest.TestCase):
 
     def test_white_game(self):
-        result = parsePGNgame(WHITE_GAME, 'captnswing')
+        white_game = list(getGames(WHITE_GAME))[0]
+        result = parsePGNgame(white_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing resigns', 'self_elo': 945, 'opponent_name': 'Kleeblatt', 'opponent_elo': 1133, 'self_white': True, 'result': '0-1', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_adjourned_game(self):
-        result = parsePGNgame(ADJOURNED_GAME, 'captnswing')
-        self.assertEqual(result, None)
+        adjourned_game = list(getGames(ADJOURNED_GAME))
+        self.assertEqual(adjourned_game, [])
 
     def test_black_game(self):
-        result = parsePGNgame(BLACK_GAME, 'captnswing')
+        black_game = list(getGames(BLACK_GAME))[0]
+        result = parsePGNgame(black_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing checkmated', 'self_elo': 952, 'opponent_name': 'aidant', 'opponent_elo': 1015, 'self_white': False, 'result': '1-0', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
 
 class TestPGNfiles(unittest.TestCase):
 
-    def pgnparser(self, pgnfile, player):
+    def pgnparser(self, pgnfile):
         t0 = time.time()
         print "parsing %s..." % pgnfile
-        allgames = parsePGNfile(pgnfile, player)
+        allgames = parsePGNfile(pgnfile)
         print "parsed %s games in %.2f seconds" % (len(allgames), time.time()-t0)
 
     def test_eboard(self):
         self.pgnfile = 'fixtures/eboard.pgn'
-        self.player = 'captnswing'
-        self.pgnparser(self.pgnfile, self.player)
+        self.pgnparser(self.pgnfile)
 
     def test_jin(self):
         self.pgnfile = 'fixtures/jin.pgn'
-        self.player = 'kingmarc'
-        self.pgnparser(self.pgnfile, self.player)
+        self.pgnparser(self.pgnfile)
 
 
 if __name__ == "__main__":
