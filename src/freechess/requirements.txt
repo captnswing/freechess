@@ -1,5 +1,0 @@
-django
-django_nose
-mysql-python
-python-dateutil < 2.0
-gchartwrapper
