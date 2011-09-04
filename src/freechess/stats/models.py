@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.db import models
 from django.db.models import Q
+from django.conf import settings
 
 class GameManager(models.Manager):
     def won_games(self):
@@ -12,6 +13,7 @@ class GameManager(models.Manager):
     def elo_trend(self):
         return super(GameManager, self).get_query_set().values_list('game_nr', 'date', 'self_elo')
 
+    
 class ChessGame(models.Model):
     game_nr = models.IntegerField(primary_key=True)
     date = models.DateField()
@@ -33,3 +35,15 @@ class ChessGame(models.Model):
         list_display = ('game_nr', 'date', 'self_white', 'opponent_name', 'self_elo', 'opponent_elo', 'timecontrol', 'result', 'comment')
         ordering = ['game_nr']
 
+
+class PGNfile(models.Model):
+    pgnfile = models.FileField(upload_to=settings.MEDIA_ROOT)
+    slug = models.SlugField(max_length=50, blank=True)
+    def __unicode__(self):
+        return self.pgnfile
+    @models.permalink
+    def get_absolute_url(self):
+        return 'upload-new',
+    def save(self, *args, **kwargs):
+        self.slug = self.pgnfile.name
+        super(PGNfile, self).save(*args, **kwargs)

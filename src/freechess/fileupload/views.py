@@ -1,4 +1,3 @@
-from freechess.fileupload.models import PGNfile
 from django.views.generic import CreateView, DeleteView
 from django.http import HttpResponse
 from django.utils import simplejson
@@ -6,10 +5,13 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 import os
 from freechess.pgnparser import parsePGNfile
-
+from freechess.stats.models import ChessGame, PGNfile
 
 def handle_uploaded_file(filename):
-    print parsePGNfile(filename)
+    allgames = parsePGNfile(filename)
+    ChessGame.objects.all().delete()
+    for game in allgames:
+        _result = ChessGame.objects.create(**game)
 
 
 class PGNfileCreateView(CreateView):
