@@ -4,6 +4,12 @@ from django.http import HttpResponse
 from django.utils import simplejson
 from django.core.urlresolvers import reverse
 from django.conf import settings
+import os
+from freechess.pgnparser import parsePGNfile
+
+
+def handle_uploaded_file(filename):
+    print parsePGNfile(filename)
 
 
 class PGNfileCreateView(CreateView):
@@ -11,11 +17,13 @@ class PGNfileCreateView(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
+        # 'pgnfile' is the name of the input field in the form in the pgnfile_form.html template
         f = self.request.FILES.get('pgnfile')
         data = [{'name': f.name,
-                 'url': settings.MEDIA_URL + "pgnfiles/" + f.name,
+                 'url': os.path.join(settings.MEDIA_URL, f.name),
                  'delete_url': reverse('upload-delete', args=[self.object.id]),
                  'delete_type': "DELETE"}]
+        handle_uploaded_file(os.path.join(settings.MEDIA_ROOT, f.name))
         response = JSONResponse(data, {}, response_mimetype(self.request))
         response['Content-Disposition'] = 'inline; filename=files.json'
         return response
@@ -41,7 +49,6 @@ class JSONResponse(HttpResponse):
 
     def __init__(self, obj='', json_opts=dict(), mimetype="application/json", *args, **kwargs):
         content = simplejson.dumps(obj, **json_opts)
-        print content
         super(JSONResponse, self).__init__(content, mimetype, *args, **kwargs)
 
 
