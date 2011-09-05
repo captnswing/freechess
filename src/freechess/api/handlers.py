@@ -14,6 +14,6 @@ class ChessGameHandler(BaseHandler):
         if chessgame_id:
             return ChessGame.objects.get(pk=chessgame_id)
         else:
-            return ChessGame.objects.elo_trend()
+            return ChessGame.objects.elo_trend_flat()
 
 Emitter.register('json', JSONEmitter, 'application/json; charset=utf-8')
