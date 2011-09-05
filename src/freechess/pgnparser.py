@@ -9,7 +9,7 @@ Returns a list of all the played games. Each game is represented as a dictionary
 
 example call:
     from pgnparser import parsePGNfile
-    allgames = parsePGNfile('path_to_my_pgn_file', 'player_name')
+    allgames = parsePGNfile('path_to_my_pgn_file')
 """
 import sys
 import time
@@ -19,18 +19,24 @@ from collections import Counter
 
 GAMEFIELDS = ChessGame._meta.get_all_field_names()
 
-def getGames(pgndata):
-    if '\r' in pgndata: pgndata = pgndata.replace('\r', '') # dos2unix
-    games = pgndata.split('\n\n[') # one empty line followed by line beginning with '['
-    for game in games:
-        data = [ tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game.splitlines() if "]" in elem ]
-        data += [ ('comment', elem.split('}')[0].strip('{')) for elem in game.splitlines() if '{' in elem ]
-        parsedgame = dict([ (k.lower(), v.strip('"')) for k, v in data ])
-        if parsedgame['result'] == "*":
-            # skip adjourned games
-            continue
-        yield parsedgame
-        
+def parsePGNfile(pgnfilename):
+    pgndata = open(pgnfilename).read()
+    return parsePGNdata(pgndata)
+
+
+def parsePGNdata(pgndata, player=None):
+    if not player:
+        player = determinePlayer(pgndata)
+    i = 1
+    allgames = []
+    for game in getGames(pgndata):
+        parsedgame = parsePGNgame(game, player)
+        parsedgame['game_nr'] = i
+        allgames.append(parsedgame)
+        i += 1
+    return allgames
+
+
 def determinePlayer(pgndata):
     allplayers = []
     for game in getGames(pgndata):
@@ -39,9 +45,19 @@ def determinePlayer(pgndata):
     cnt = Counter(allplayers)
     return cnt.most_common(1)[0][0].lower()
 
-def parsePGNfile(pgnfilename):
-    pgndata = open(pgnfilename).read()
-    return parsePGNdata(pgndata)
+
+def getGames(pgndata):
+    if '\r' in pgndata: pgndata = pgndata.replace('\r', '') # dos2unix
+    games = pgndata.split('\n\n[') # one empty line followed by line beginning with '['
+    for game in games:
+        data = [tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game.splitlines() if "]" in elem]
+        data += [('comment', elem.split('}')[0].strip('{')) for elem in game.splitlines() if '{' in elem]
+        parsedgame = dict([(k.lower(), v.strip('"')) for k, v in data])
+        if parsedgame['result'] == "*":
+            # skip adjourned games
+            continue
+        yield parsedgame
+
 
 def parsePGNgame(game, player):
     try:
@@ -54,7 +70,7 @@ def parsePGNgame(game, player):
     except (ValueError, KeyError):
         # default elo for guest opponents
         game['blackelo'] = 1100
-    # sort out white and black
+        # sort out white and black
     if game['white'] == player:
         game['self_white'] = True
         game['self_elo'] = game['whiteelo']
@@ -74,19 +90,6 @@ def parsePGNgame(game, player):
             del game[key]
     return game
 
-def parsePGNdata(pgndata, player=None):
-    if not player:
-        player = determinePlayer(pgndata)
-    i = 1
-    allgames = []
-    for game in getGames(pgndata):
-        parsedgame = parsePGNgame(game, player)
-        parsedgame['game_nr'] = i
-        allgames.append(parsedgame)
-        i += 1
-    return allgames
-
-
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) == 2:
@@ -96,7 +99,6 @@ if __name__ == "__main__":
         pgnfile = 'fixtures/eboard.pgn'
 
     t0 = time.time()
-    pgndata = open(pgnfile).read()
     print "parsing %s..." % pgnfile
-    allgames = parsePGNdata(pgndata)
-    print "parsed %s games in %.2f seconds" % (len(allgames), time.time()-t0)
+    allgames = parsePGNfile(pgnfile)
+    print "parsed %s games in %.2f seconds" % (len(allgames), time.time() - t0)
