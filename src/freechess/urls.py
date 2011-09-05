@@ -16,7 +16,7 @@ urlpatterns += patterns('freechess.stats',
     url(r'monthlyresult.png$', 'images.monthlyResultImg', name='stats-monthlyresult'),
     url(r'opponentselo.png$', 'images.opponentsEloImg', name='stats-opponentselo'),
     url(r'elohist.png$', 'images.eloHistImg', name='stats-elohist'),
-    url(r'elohist_highcharts.png$', 'images.eloHistImgHighCharts', name='stats-elohist-highcharts'),
+    url(r'elohist_highcharts', 'images.eloHistImgHighCharts', name='stats-elohist-highcharts'),
 )
 
 # data admin

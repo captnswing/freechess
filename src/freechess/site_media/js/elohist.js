@@ -1,27 +1,24 @@
-var chart1; // globally available
+var chart;
 $(document).ready(function() {
-      chart1 = new Highcharts.Chart({
-         chart: {
+
+    var options = {
+        chart: {
             renderTo: 'highchart',
-            type: 'bar'
-         },
-         title: {
-            text: 'Fruit Consumption'
-         },
-         xAxis: {
-            categories: ['Apples', 'Bananas', 'Oranges']
-         },
-         yAxis: {
-            title: {
-               text: 'Fruit eaten'
-            }
-         },
-         series: [{
-            name: 'Jane',
-            data: [1, 0, 4]
-         }, {
-            name: 'John',
-            data: [5, 7, 3]
-         }]
-      });
-   });
+            type: 'line'
+        },
+        title: {
+            text: 'Elohist'
+        },
+        series: [{}]
+    };
+
+    $.ajax({
+        url: 'http://127.0.0.1:8000/api/elohist',
+        dataType: 'json',
+        success: function(data) {
+            console.log(data)
+            options.series[0].data = data;
+            chart = new Highcharts.Chart(options);
+        }
+    });
+});

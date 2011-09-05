@@ -11,9 +11,10 @@ class GameManager(models.Manager):
     def drawn_games(self):
         return super(GameManager, self).get_query_set().filter(result__contains="1/2")
     def elo_trend(self):
-        return super(GameManager, self).get_query_set().values_list('game_nr', 'date', 'self_elo')
+#        return super(GameManager, self).get_query_set().values_list('game_nr', 'date', 'self_elo')
+        return super(GameManager, self).get_query_set().values_list('self_elo', flat=True)
 
-    
+
 class ChessGame(models.Model):
     game_nr = models.IntegerField(primary_key=True)
     date = models.DateField()
