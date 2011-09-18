@@ -1,246 +1,278 @@
 {% extends "base.html" %}
 
 {% block extraheaders %}
-<title>{{ player }}'s chess stats on freechess.org</title>
-<style type="text/css">
-/*<![CDATA[*/
-    tbody tr:nth-child(2n) td, tbody tr.even td { background: none; }
-    div.rightalign, td.rightalign { text-align: right; }
-    td { vertical-align: top; border-bottom: 1px dotted #DDDDDD; }
-    table#resulttally tr { color: 333; }
-    table#resulttally td { border-bottom: 1px dotted white; }
-    table#resulttally .won { background-color: #A3CF93; }
-    table#resulttally .drawn { background-color: #FAD8A7; }
-    table#resulttally .lost { background-color: #C75D74; }
-    div#tabs { display: none; }
-    table#mostplayed, table#topdefeated, table#resulttally { border: 1px dotted #666666; }
-   ]>*/
-</style>
-<script>
-$(function() {
-    $("#tabs").tabs();
-    $("body").css("font-size", "62.5%")
-    $("div#tabs").css("display", "block")
-});
-</script>
+    <title>{{ player }}'s chess stats on freechess.org</title>
+    <style type="text/css">
+        .myspan-12 {width:458px; float: left;}
+        .myspan-10 {width:390px; float: left;}
+        .myspan-7  {width:258px; float: left;}
+        div.clear  {clear: both; margin: 0;}
+
+        td.rightalign {
+            text-align: right;
+        }
+
+        table#summary tr:nth-child(2n) td, tr.even td {
+            background: none;
+        }
+
+        table#resulttally tr:nth-child(2n) td, tr.even td {
+            background: none;
+        }
+
+        table#resulttally .won {
+            background-color: #A3CF93;
+        }
+
+        table#resulttally .drawn {
+            background-color: #FAD8A7;
+        }
+
+        table#resulttally .lost {
+            background-color: #C75D74;
+        }
+
+        table#mostplayed, table#topdefeated, table#resulttally {
+            border: 1px dotted #666666;
+        }
+    </style>
+    <script>
+        $(function() {
+            $("#tabs").tabs();
+        });
+    </script>
 {% endblock %}
 
 {% block heading %}
-<h2>{{ player }}'s chess stats on <a href="http://freechess.org">freechess.org</a></h2>
-<h4>playing on average {{ stats.perday|floatformat }} games/day since recording began on {{ stats.firstdate|date:"d M Y" }}</h4>
+    <h2>{{ player }}'s chess stats on <a href="http://freechess.org">freechess.org</a></h2>
+    <h4>playing on average {{ stats.perday|floatformat }} games/day since recording began
+        on {{ stats.firstdate|date:"d M Y" }}</h4>
 {% endblock %}
 
 {% block content %}
-<div id="tabs">
+    <div id="tabs">
     <ul>
-        <li><a href="#tabs-1">stats & elotrend</a></li>
-        <li><a href="#tabs-2"> opponents{% if won_tally or lost_tally %} & results{% endif %}</a></li>
-        <li><a href="#tabs-3">last 100 games</a></li>
+        <li><a href="#elotrend">stats & elotrend</a></li>
+        <li><a href="#opponents">opponents{% if won_tally or lost_tally %} & results{% endif %}</a></li>
+        <li><a href="#history">last 100 games</a></li>
     </ul>
-</div>
 
-<div id="tabs-1" class="span-24">
-<h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
+    <div id="elotrend">
+        <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
 
-<div align="center" style="padding-bottom:4em;"><img src="elohist.png" alt="elo history" /></div>
+        <div align="left" style="padding-bottom:4em;"><img src="elohist.png" alt="elo history"/></div>
 
-<div class="span-11">
-<h3>current elo: {{ stats.currentelo }}</h3>
-<table>
-	<tr>
-		<td>alltime high
-		<td class="rightalign">{{ stats.alltime_maxelo }}</td>
-		<td>{{ stats.alltime_maxelo_date }}</td>
-	</tr>
-	<tr>
-		<td>alltime low
-		<td class="rightalign">{{ stats.alltime_minelo }}</td>
-		<td>{{ stats.alltime_minelo_date }}</td>
-	</tr>
-	<tr>
-		<td>3months high
-		<td class="rightalign">{{ stats.three_months_maxelo }}</td>
-		<td>{{ stats.three_months_maxelo_date }}</td>
-	</tr>
-	<tr>
-		<td>3months low
-		<td class="rightalign">{{ stats.three_months_minelo }}</td>
-		<td>{{ stats.three_months_minelo_date }}</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td></td>
-		<td class="rightalign"><strong>as white</strong></td>
-		<td class="rightalign"><strong>as black</strong></td>
-	</tr>
-	<tr>
-		<td>won</td>
-		<td class="rightalign">{{ stats.won_as_white }}</td>
-		<td class="rightalign">{{ stats.won_as_black }}</td>
-	</tr>
-	<tr>
-		<td>drawn</td>
-		<td class="rightalign">{{ stats.drawn_as_white }}</td>
-		<td class="rightalign">{{ stats.drawn_as_black }}</td>
-	</tr>
-	<tr>
-		<td>lost</td>
-		<td class="rightalign">{{ stats.lost_as_white }}</td>
-		<td class="rightalign">{{ stats.lost_as_black }}</td>
-	</tr>
-	<tr>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-		<td>&nbsp;</td>
-	</tr>
-	<tr>
-		<td>average opponent strength (last 3 months)</td>
-		<td class="rightalign"></td>
-		<td class="rightalign">{{ stats.opponentaverage|floatformat }}</td>
-	</tr>
-	<tr>
-		<td>games played against stronger opponents</td>
-		<td class="rightalign"></td>
-		<td class="rightalign">{{ stats.stronger|floatformat }}%</td>
-	</tr>
-	<tr>
-		<td>games played against weaker opponents</td>
-		<td class="rightalign"></td>
-		<td class="rightalign">{{ stats.weaker|floatformat }}%</td>
-	</tr>
-</table>
-</div>
+        <div class="myspan-12">
+            <h3>current elo: {{ stats.currentelo }}</h3>
+            <table id="summary">
+                <tbody>
+                <tr>
+                    <td>alltime high
+                    <td class="rightalign">{{ stats.alltime_maxelo }}</td>
+                    <td class="rightalign">{{ stats.alltime_maxelo_date|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td>alltime low
+                    <td class="rightalign">{{ stats.alltime_minelo }}</td>
+                    <td class="rightalign">{{ stats.alltime_minelo_date|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td>3months high
+                    <td class="rightalign">{{ stats.three_months_maxelo }}</td>
+                    <td class="rightalign">{{ stats.three_months_maxelo_date|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td>3months low
+                    <td class="rightalign">{{ stats.three_months_minelo }}</td>
+                    <td class="rightalign">{{ stats.three_months_minelo_date|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td class="rightalign"><strong>as white</strong></td>
+                    <td class="rightalign"><strong>as black</strong></td>
+                </tr>
+                <tr>
+                    <td>won</td>
+                    <td class="rightalign">{{ stats.won_as_white }}</td>
+                    <td class="rightalign">{{ stats.won_as_black }}</td>
+                </tr>
+                <tr>
+                    <td>drawn</td>
+                    <td class="rightalign">{{ stats.drawn_as_white }}</td>
+                    <td class="rightalign">{{ stats.drawn_as_black }}</td>
+                </tr>
+                <tr>
+                    <td>lost</td>
+                    <td class="rightalign">{{ stats.lost_as_white }}</td>
+                    <td class="rightalign">{{ stats.lost_as_black }}</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>average opponent strength (last 3 months)</td>
+                    <td class="rightalign"></td>
+                    <td class="rightalign">{{ stats.opponentaverage|floatformat }}</td>
+                </tr>
+                <tr>
+                    <td>games played against stronger opponents</td>
+                    <td class="rightalign"></td>
+                    <td class="rightalign">{{ stats.stronger|floatformat }}%</td>
+                </tr>
+                <tr>
+                    <td>games played against weaker opponents</td>
+                    <td class="rightalign"></td>
+                    <td class="rightalign">{{ stats.weaker|floatformat }}%</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
 
-<div class="span-12 prepend-1 last">
-<h3>monthly performance</h3>
-<img src="monthlyresult.png" alt="monthly performance" />
-</div>
-</div>
+        <div class="myspan-12 prepend-2">
+            <h3>monthly performance</h3>
+            <img src="monthlyresult.png" alt="monthly performance"/>
+        </div>
 
-
-<div id="tabs-2" class="span-24">
-<div class="span-6">
-<h3>most played opponents</h3>
-<table id="mostplayed">
-	<thead>
-		<tr>
-			<th>player</th>
-			<th class="rightalign">won</th>
-			<th class="rightalign">draw</th>
-			<th class="rightalign">lost</th>
-		</tr>
-	</thead>
-	{% for opponent in most_frequent_opponents %}
-	<tr>
-		<td>{{ opponent.1 }}</td>
-		<td class="rightalign">{{ opponent.0.1 }}</td>
-		<td class="rightalign">{{ opponent.0.2 }}</td>
-		<td class="rightalign">{{ opponent.0.3 }}</td>
-	</tr>
-	{% endfor %}
-</table>
-</div>
-
-<div class="span-6 prepend-1">
-<h3>top defeated opponents</h3>
-<table id="topdefeated">
-	<thead>
-		<tr>
-			<th>elo</th>
-			<th>player</th>
-			<th>date</th>
-		</tr>
-	</thead>
-	{% for opponent in strongest_opponents_won %}
-	<tr>
-		<td>{{ opponent.0 }}</td>
-		<td>{{ opponent.1 }}</td>
-		<td class="rightalign">{{ opponent.2|date:"M Y" }}</td>
-	</tr>
-	{% endfor %}
-</table>
-</div>
-
-<div class="span-10 prepend-1 last">
-{% if won_tally or lost_tally %}
-<h3>result distribution</h3>
-<table id="resulttally">
-    <thead>
-        <tr>
-            <th>result</th>
-            <th class="rightalign">freq.</th>
-        </tr>
-    </thead>
-
-    <!-- tally of won games -->
-    {% for result in won_tally %}
-    <tr class="won">
-        <td>{{ result.0 }}</td>
-        <td class="rightalign">{{ result.1 }}</td>
-    </tr>
-    {% endfor %}
-
-    <!-- tally of drawn games -->
-    {% for result in drawn_tally %}
-    <tr class="drawn">
-        <td>{{ result.0 }}</td>
-        <td class="rightalign">{{ result.1 }}</td>
-    </tr>
-    {% endfor %}
-
-    <!-- tally of lost games -->
-    {% for result in lost_tally %}
-    <tr class="lost">
-        <td>{{ result.0 }}</td>
-        <td class="rightalign">{{ result.1 }}</td>
-    </tr>
-    {% endfor %}
-</table>
-{% endif %}
-</div>
-</div>
+        <div class="clear"></div>
+    </div>
 
 
-<div id="tabs-3" class="span-24">
-<div class="span-23 last">
-<h3>last 100 games (of {{ stats.total }} in total)</h3>
-<table>
-	<thead>
-		<tr>
-			<th>#</th>
-			<th>date</th>
-			<th>white</th>
-			<th>black</th>
-			<th>w_elo</th>
-			<th>b_elo</th>
-			<th>timecontrol</th>
-			<th>result</th>
+    <div id="opponents">
+        <div class="myspan-7">
+            <h3>most played opponents</h3>
+            <table id="mostplayed">
+                <thead>
+                <tr>
+                    <th>player</th>
+                    <th class="rightalign">won</th>
+                    <th class="rightalign">draw</th>
+                    <th class="rightalign">lost</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for opponent in most_frequent_opponents %}
+                    <tr>
+                        <td>{{ opponent.1 }}</td>
+                        <td class="rightalign">{{ opponent.0.1 }}</td>
+                        <td class="rightalign">{{ opponent.0.2 }}</td>
+                        <td class="rightalign">{{ opponent.0.3 }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="myspan-7 prepend-1">
+            <h3>top defeated opponents</h3>
+            <table id="topdefeated">
+                <thead>
+                <tr>
+                    <th>elo</th>
+                    <th>player</th>
+                    <th>date</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for opponent in strongest_opponents_won %}
+                    <tr>
+                        <td>{{ opponent.0 }}</td>
+                        <td>{{ opponent.1 }}</td>
+                        <td class="rightalign">{{ opponent.2|date:"M Y" }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="myspan-10 prepend-1">
             {% if won_tally or lost_tally %}
-			<th>comment</th>
-            {% endif %}
-		</tr>
-	</thead>
-	{% for game in last100games %}
-	<tr>
-		<td>{{ game.game_nr }}</td>
-		<td>{{ game.date }}</td>
-        <td>{% if game.self_white %}{{ player }}{% else %}{{ game.opponent_name }}{% endif %}</td>
-        <td>{% if game.self_white %}{{ game.opponent_name }}{% else %}{{ player }}{% endif %}</td>
-		<td>{% if game.self_white %}{{ game.self_elo }}{% else %}{{ game.opponent_elo }}{% endif %}</td>
-        <td>{% if game.self_white %}{{ game.opponent_elo }}{% else %}{{ game.self_elo }}{% endif %}</td>
-		<td>{{ game.timecontrol }}</td>
-		<td>{{ game.result }}</td>
-        {% if won_tally or lost_tally %}
-		<td>{{ game.comment }}</td>
-        {% endif %}
-	</tr>
-	{% endfor %}
-</table>
-</div>
-</div>
-{% endblock %}
+                <h3>result distribution</h3>
+                <table id="resulttally">
+                    <thead>
+                    <tr>
+                        <th>result</th>
+                        <th class="rightalign">freq.</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- tally of won games -->
+                    {% for result in won_tally %}
+                        <tr class="won">
+                            <td>{{ result.0 }}</td>
+                            <td class="rightalign">{{ result.1 }}</td>
+                        </tr>
+                    {% endfor %}
 
+                    <!-- tally of drawn games -->
+                    {% for result in drawn_tally %}
+                        <tr class="drawn">
+                            <td>{{ result.0 }}</td>
+                            <td class="rightalign">{{ result.1 }}</td>
+                        </tr>
+                    {% endfor %}
+
+                    <!-- tally of lost games -->
+                    {% for result in lost_tally %}
+                        <tr class="lost">
+                            <td>{{ result.0 }}</td>
+                            <td class="rightalign">{{ result.1 }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
+
+        <div class="clear"></div>
+
+    </div>
+
+
+    <div id="history">
+        <div>
+            <h3>last 100 games (of {{ stats.total }} in total)</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>date</th>
+                    <th>white</th>
+                    <th>black</th>
+                    <th>w_elo</th>
+                    <th>b_elo</th>
+                    <th>timecontrol</th>
+                    <th>result</th>
+                    {% if won_tally or lost_tally %}
+                        <th>comment</th>
+                    {% endif %}
+                </tr>
+                </thead>
+                <tbody>
+                {% for game in last100games %}
+                    <tr>
+                        <td>{{ game.game_nr }}</td>
+                        <td>{{ game.date|date:"Y-m-d" }}</td>
+                        <td>{% if game.self_white %}{{ player }}{% else %}{{ game.opponent_name }}{% endif %}</td>
+                        <td>{% if game.self_white %}{{ game.opponent_name }}{% else %}{{ player }}{% endif %}</td>
+                        <td>{% if game.self_white %}{{ game.self_elo }}{% else %}{{ game.opponent_elo }}{% endif %}</td>
+                        <td>{% if game.self_white %}{{ game.opponent_elo }}{% else %}{{ game.self_elo }}{% endif %}</td>
+                        <td>{{ game.timecontrol }}</td>
+                        <td>{{ game.result }}</td>
+                        {% if won_tally or lost_tally %}
+                            <td>{{ game.comment }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>  {# end of tabs #}
+{% endblock %}
