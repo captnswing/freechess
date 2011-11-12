@@ -2,98 +2,104 @@
 {% load raw %}
 
 {% block extraheaders %}
-<title>PGNfile</title>
-<link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
-<link rel="stylesheet" href="{{ STATIC_URL }}style.css">
+    <title>PGNfile</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}jquery.fileupload-ui.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}style.css">
 {% endblock %}
 
 {% block content %}
-<div id="fileupload">
-    <form method="post" action="" enctype="multipart/form-data">
-        <div class="fileupload-buttonbar">
-            {% csrf_token %}
-            <label class="fileinput-button">
-                <span>Add files...</span>
-                <input type="file" name="pgnfile" multiple>
-            </label>
-            <button type="submit" class="start">Start upload</button>
-            <button type="reset" class="cancel">Cancel upload</button>
-            <button type="button" class="delete">Delete files</button>
+    <div id="fileupload">
+        <form method="post" action="" enctype="multipart/form-data">
+            <div class="fileupload-buttonbar">
+                {% csrf_token %}
+                <label class="fileinput-button">
+                    <span>Add files...</span>
+                    <input type="file" name="pgnfile" multiple>
+                </label>
+                <button type="submit" class="start">Start upload</button>
+                <button type="reset" class="cancel">Cancel upload</button>
+                <button type="button" class="delete">Delete files</button>
+            </div>
+        </form>
+        <div class="fileupload-content">
+            <table class="files"></table>
+            <div class="fileupload-progressbar"></div>
         </div>
-    </form>
-    <div class="fileupload-content">
-        <table class="files"></table>
-        <div class="fileupload-progressbar"></div>
     </div>
-</div>
-{% raw %}
-<script id="template-upload" type="text/x-jquery-tmpl">
-<tr class="template-upload{{if error}} ui-state-error{{/if}}">
-    <td class="preview"></td>
-    <td class="name">${name}</td>
-    <td class="size">${sizef}</td>
-    {{if error}}
-        <td class="error" colspan="2">Error:
-            {{if error === 'maxFileSize'}}File is too big
-            {{else error === 'minFileSize'}}File is too small
-            {{else error === 'acceptFileTypes'}}Filetype not allowed
-            {{else error === 'maxNumberOfFiles'}}Max number of files exceeded
-            {{else}}${error}
-            {{/if}}
-        </td>
-    {{else}}
-        <td class="progress"><div></div></td>
-        <td class="start"><button>Start</button></td>
-    {{/if}}
-    <td class="cancel"><button>Cancel</button></td>
-</tr>
-</script>
+    {% raw %}
+        <script id="template-upload" type="text/x-jquery-tmpl">
+            <tr class="template-upload{{if error}} ui-state-error{{/if}}">
+                <td class="preview"></td>
+                <td class="name">${name}</td>
+                <td class="size">${sizef}</td>
+                {{ if error}}
+                <td class="error" colspan="2">Error:
+                    {{ if error === 'maxFileSize'}}File is too big
+                    {{ else error === 'minFileSize'}}File is too small
+                    {{ else error === 'acceptFileTypes'}}Filetype not allowed
+                    {{ else error === 'maxNumberOfFiles'}}Max number of files exceeded
+                    {{ else }}${error}
+                    {{/if}}
+                </td>
+                {{ else }}
+                <td class="progress">
+                    <div></div>
+                </td>
+                <td class="start">
+                    <button>Start</button>
+                </td>
+                {{/if}}
+                <td class="cancel">
+                    <button>Cancel</button>
+                </td>
+            </tr>
+        </script>
 
-<script id="template-download" type="text/x-jquery-tmpl">
-<tr class="template-download{{if error}} ui-state-error{{/if}}">
-    {{if error}}
-        <td></td>
-        <td class="name">${name}</td>
-        <td class="size">${sizef}</td>
-        <td class="error" colspan="2">Error:
-            {{if error === 1}}File exceeds upload_max_filesize (php.ini directive)
-            {{else error === 2}}File exceeds MAX_FILE_SIZE (HTML form directive)
-            {{else error === 3}}File was only partially uploaded
-            {{else error === 4}}No File was uploaded
-            {{else error === 5}}Missing a temporary folder
-            {{else error === 6}}Failed to write file to disk
-            {{else error === 7}}File upload stopped by extension
-            {{else error === 'maxFileSize'}}File is too big
-            {{else error === 'minFileSize'}}File is too small
-            {{else error === 'acceptFileTypes'}}Filetype not allowed
-            {{else error === 'maxNumberOfFiles'}}Max number of files exceeded
-            {{else error === 'uploadedBytes'}}Uploaded bytes exceed file size
-            {{else error === 'emptyResult'}}Empty file upload result
-            {{else}}${error}
-            {{/if}}
-        </td>
-    {{else}}
-    <td class="preview">
-        test
-    </td>
-    <td class="name">
-        <a href="${url}">${name}</a>
-    </td>
-    <td class="size">
-        size ${sizef}
-    </td>
-    <td colspan="2">
-        test
-    </td>
-    {{/if}}
-    <td class="delete">
-        <button data-type="${delete_type}" data-url="${delete_url}">Delete</button>
-    </td>
-</tr>
-</script>
-{% endraw %}
-<script src="{{ STATIC_URL }}jquery.iframe-transport.js"></script>
-<script src="{{ STATIC_URL }}jquery.fileupload.js"></script>
-<script src="{{ STATIC_URL }}jquery.fileupload-ui.js"></script>
-<script src="{{ STATIC_URL }}application.js"></script>
+        <script id="template-download" type="text/x-jquery-tmpl">
+            <tr class="template-download{{if error}} ui-state-error{{/if}}">
+                {{ if error}}
+                <td></td>
+                <td class="name">${name}</td>
+                <td class="size">${sizef}</td>
+                <td class="error" colspan="2">Error:
+                    {{ if error === 1}}File exceeds upload_max_filesize
+                    {{ else error === 2}}File exceeds MAX_FILE_SIZE (HTML form directive)
+                    {{ else error === 3}}File was only partially uploaded
+                    {{ else error === 4}}No File was uploaded
+                    {{ else error === 5}}Missing a temporary folder
+                    {{ else error === 6}}Failed to write file to disk
+                    {{ else error === 7}}File upload stopped by extension
+                    {{ else error === 'maxFileSize'}}File is too big
+                    {{ else error === 'minFileSize'}}File is too small
+                    {{ else error === 'acceptFileTypes'}}Filetype not allowed
+                    {{ else error === 'maxNumberOfFiles'}}Max number of files exceeded
+                    {{ else error === 'uploadedBytes'}}Uploaded bytes exceed file size
+                    {{ else error === 'emptyResult'}}Empty file upload result
+                    {{ else }}${error}
+                </td>
+                {{/if}}
+                {{ else }}
+                <td class="preview">
+                    test
+                </td>
+                <td class="name">
+                    <a href="${url}">${name}</a>
+                </td>
+                <td class="size">
+                    size ${sizef}
+                </td>
+                <td colspan="2">
+                    test
+                </td>
+                {{/if}}
+                <td class="delete">
+                    <button data-type="${delete_type}" data-url="${delete_url}">Delete</button>
+                </td>
+            </tr>
+        </script>
+    {% endraw %}
+    <script src="{{ STATIC_URL }}jquery.iframe-transport.js"></script>
+    <script src="{{ STATIC_URL }}jquery.fileupload.js"></script>
+    <script src="{{ STATIC_URL }}jquery.fileupload-ui.js"></script>
+    <script src="{{ STATIC_URL }}application.js"></script>
 {% endblock %}

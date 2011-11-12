@@ -3,10 +3,25 @@
 {% block extraheaders %}
     <title>{{ player }}'s chess stats on freechess.org</title>
     <style type="text/css">
-        .myspan-12 {width:458px; float: left;}
-        .myspan-10 {width:390px; float: left;}
-        .myspan-7  {width:258px; float: left;}
-        div.clear  {clear: both; margin: 0;}
+        .myspan-12 {
+            width: 458px;
+            float: left;
+        }
+
+        .myspan-10 {
+            width: 390px;
+            float: left;
+        }
+
+        .myspan-7 {
+            width: 258px;
+            float: left;
+        }
+
+        div.clear {
+            clear: both;
+            margin: 0;
+        }
 
         td.rightalign {
             text-align: right;
@@ -169,7 +184,7 @@
             </table>
         </div>
 
-        <div class="myspan-7 prepend-1">
+        <div class="myspan-7 prepend-2">
             <h3>top defeated opponents</h3>
             <table id="topdefeated">
                 <thead>
@@ -191,7 +206,7 @@
             </table>
         </div>
 
-        <div class="myspan-10 prepend-1">
+        <div class="myspan-10 prepend-2">
             {% if won_tally or lost_tally %}
                 <h3>result distribution</h3>
                 <table id="resulttally">

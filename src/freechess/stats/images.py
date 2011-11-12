@@ -17,8 +17,7 @@ def create_eloHistImg():
     global games_per_day
     if not ChessGame.objects.count():
         raise Exception, 'no data in database. try running importgames first.'
-    y, m = datetime.date.today().timetuple()[:2]
-    startdate = datetime.date(y, m, 1) + relativedelta(months=-9)
+    startdate = ChessGame.objects.latest().date + relativedelta(months=-9)
     allgames = ChessGame.objects.all().filter(date__gte=startdate)
     last_date = None
     elosum_per_day = 0

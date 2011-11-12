@@ -23,7 +23,7 @@ def chessStats(request):
     elotrend =  ChessGame.objects.elo_trend()
     all_elos = list(allgames.values_list('self_elo'))
     stats = {
-        "startdate": datetime.date(y, m, 1) + relativedelta(months=-9),
+        "startdate": ChessGame.objects.latest().date + relativedelta(months=-9),
         "enddate": lastgame.date,
         "firstdate": firstgame.date,
         "perday": number_of_games / float(daterange.days),
@@ -76,6 +76,11 @@ def chessStats(request):
     # stats over last three months
     three_months_ago = today + relativedelta(months=-3)
     three_months_games = allgames.filter(date__range=(three_months_ago, today))
+    if not three_months_games:
+        # data contains only older games
+        latest_date = allgames.latest().date
+        three_months_ago = latest_date + relativedelta(months=-3)
+        three_months_games = allgames.filter(date__range=(three_months_ago, today))
     # three_months_games.aggregate(Max('self_elo'), Min('self_elo'))
     three_months_elotrend = three_months_games.values_list('game_nr', 'date', 'self_elo')
     three_months_elos = list(three_months_games.values_list('self_elo'))
