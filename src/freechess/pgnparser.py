@@ -43,7 +43,8 @@ def determinePlayer(pgndata):
         allplayers.append(game['white'])
         allplayers.append(game['black'])
     cnt = Counter(allplayers)
-    return cnt.most_common(1)[0][0].lower()
+    likelyplayer = cnt.most_common(1)[0][0]
+    return likelyplayer
 
 
 def getGames(pgndata):
@@ -81,7 +82,7 @@ def parsePGNgame(game, player):
         game['self_elo'] = game['blackelo']
         game['opponent_elo'] = game['whiteelo']
         game['opponent_name'] = game['white']
-    # set date
+        # set date
     y, m, d = game['date'].split('.')
     game['date'] = datetime.date(int(y), int(m), int(d))
     # delete unused keys
