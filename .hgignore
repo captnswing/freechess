@@ -1,19 +1,25 @@
 # use glob syntax.
 syntax: glob
-
+*.egg
+*.egg-info          
 *.pyc
-build
-dist        
+.DS_Store
+.Python
+.coverage
 .idea
+.git
+.gitignore
 .project
 .pydevproject
 .settings
 .svn
-*.egg-info          
-*.egg
-nbproject
-.DS_Store
+bin
+build
+dist        
 distribute*.tar.gz
+include
+lib
 localsettings.py
-.coverage
+nbproject
 nosetests.xml
+src/freechess/pgnfiles
