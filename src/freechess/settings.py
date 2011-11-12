@@ -94,11 +94,11 @@ import sys
 DATABASES = {
     'default': {
         # https://docs.djangoproject.com/en/dev/ref/settings/#test-name
-        'ENGINE': 'sqlite3' if 'test' in sys.argv else 'django.db.backends.mysql',
+        'ENGINE': 'sqlite3' if 'test' in sys.argv else 'django.db.backends.postgresql_psycopg2',
         'NAME': 'captnswing',
         'USER': 'root',
         'PASSWORD': 'mp109',
-        'HOST': '',
+        'HOST': 'localhost',
         'PORT': '',
     }
 }
@@ -123,52 +123,3 @@ NOSE_ARGS = ['--verbosity=0', ] #'--pdb']
 INSTALLED_APPS += (
     'django_nose',
 )
-
-#                 _
-#  ___  ___ _ __ | |_ _ __ _   _
-# / __|/ _ \ '_ \| __| '__| | | |
-# \__ \  __/ | | | |_| |  | |_| |
-# |___/\___|_| |_|\__|_|   \__, |
-#                          |___/
-#
-#INSTALLED_APPS += (
-#    'indexer',
-#    'paging',
-#    'sentry',
-#    'sentry.client',
-#)
-
-#     _                                     ____ _____
-#    / \   _ __ ___   __ _ _______  _ __   / ___|___ /
-#   / _ \ | '_ ` _ \ / _` |_  / _ \| '_ \  \___ \ |_ \
-#  / ___ \| | | | | | (_| |/ / (_) | | | |  ___) |__) |
-# /_/   \_\_| |_| |_|\__,_/___\___/|_| |_| |____/____/
-#
-#DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-#AWS_ACCESS_KEY_ID = '12YAAWKJ7TJ7RZ0C1FG2'
-#AWS_SECRET_ACCESS_KEY = '77x5r4wOED+Z8CjnFGMgSL77O2cInxs9Scd4HbOe'
-#AWS_STORAGE_BUCKET_NAME = 'frank-data'
-#from S3 import CallingFormat
-#AWS_CALLING_FORMAT = CallingFormat.SUBDOMAIN
-#
-#INSTALLED_APPS += (
-#    'storages',
-#)
-
-
-#   ____     _
-#  / ___|___| | ___ _ __ _   _
-# | |   / _ \ |/ _ \ '__| | | |
-# | |__|  __/ |  __/ |  | |_| |
-#  \____\___|_|\___|_|   \__, |
-#                        |___/
-
-#import djcelery
-#INSTALLED_APPS += (
-#   'djcelery',
-#   'ghettoq',
-#)
-#djcelery.setup_loader()
-#CELERY_IMPORTS = (
-#   "stats.backgroundtasks",
-#)
