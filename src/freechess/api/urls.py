@@ -1,10 +1,8 @@
 #-*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from piston.resource import Resource
-from freechess.api.handlers import ChessGameHandler
 
-chessgame_resource = Resource(ChessGameHandler)
-
-urlpatterns = patterns('',
-    url(r'^elohist', chessgame_resource, { 'emitter_format': 'json' }),
+urlpatterns = patterns('freechess.api.handlers',
+    url(r'^elohist', 'elohist', name='api-elohist'),
+    url(r'^monthlyresult', 'monthlyresult', name='api-monthlyresult'),
+    url(r'^opponentselo', 'opponentselo', name='api-opponentselo'),
 )
