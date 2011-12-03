@@ -90,15 +90,13 @@ INSTALLED_APPS = (
 )
 
 # database configuration
-import sys
 DATABASES = {
     'default': {
-        # https://docs.djangoproject.com/en/dev/ref/settings/#test-name
-        'ENGINE': 'sqlite3' if 'test' in sys.argv else 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'captnswing',
         'USER': 'root',
         'PASSWORD': 'mp109',
-        'HOST': 'localhost',
+        'HOST': '',
         'PORT': '',
     }
 }
