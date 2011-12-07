@@ -1,7 +1,7 @@
 # use glob syntax.
 syntax: glob
 *.egg
-*.egg-info          
+*.egg-info
 *.pyc
 .DS_Store
 .Python
@@ -15,11 +15,11 @@ syntax: glob
 .svn
 bin
 build
-dist        
+dist
 distribute*.tar.gz
 include
 lib
 localsettings.py
 nbproject
 nosetests.xml
-src/freechess/pgnfiles
+freechess/pgnfiles
