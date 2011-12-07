@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 """
-Parses a FreeChess .pgn file (Portable Game Notation) into a list.
+Parses a FreeChess .pgn file object (Portable Game Notation) into a list.
 Currently, this parser understands files written by Jin and eBoard clients.
 Only completed games are included in the gamelist.
 
@@ -9,7 +9,8 @@ Returns a list of all the played games. Each game is represented as a dictionary
 
 example call:
     from pgnparser import parsePGNfile
-    allgames = parsePGNfile('path_to_my_pgn_file')
+    allgames = parsePGNfile(open('path_to_my_pgn_file'))
+    allgames = parsePGNfile(urllib2.urlopen('http://url/to/my_pgn_file'))
 """
 import sys
 import time
@@ -19,42 +20,55 @@ from collections import Counter
 
 GAMEFIELDS = ChessGame._meta.get_all_field_names()
 
-def determinePlayer(games):
+def determineMostCommonPlayer(games):
+    """
+    takes a list of pgn games as dictionaries and returns the name of the most common player
+    """
     allplayers = []
     for g in games:
         allplayers.append(g['white'])
         allplayers.append(g['black'])
     cnt = Counter(allplayers)
-    likelyplayer = cnt.most_common(1)[0][0]
-    return likelyplayer
+    most_common_player = cnt.most_common(1)[0][0]
+    return most_common_player
 
 def parsePGNfile(pgnfile):
-    player = None
+    """
+    takes a pgn file object and returns a generator of parsed dictionaries for each completed game
+    """
+    # create game generator
     allgames = getGames(pgnfile)
+    # player is not yet determined
+    # get the first two games from the generator
+    g1 = allgames.next()
+    g2 = allgames.next()
+    # determine the player that appears in both games
+    player = determineMostCommonPlayer((g1, g2))
+    # yield the parsed first two games
+    if g1['result'] != "*": # skip adjourned games
+        yield parsePGNgame(g1, player)
+    if g2['result'] != "*": # skip adjourned games
+        yield parsePGNgame(g2, player)
+    # go through rest of the generator
     for g in allgames:
-        if not player:
-            # player not yet determined. get one more game
-            g2 = allgames.next()
-            # determine player that appears in both games
-            player = determinePlayer((g, g2))
-            if not g['result'] == "*": # skip adjourned games
-                yield parsePGNgame(g, player)
-            if not g2['result'] == "*": # skip adjourned games
-                yield parsePGNgame(g2, player)
-            # next please
-            continue
-        # we have a player already
-        if not g['result'] == "*": # skip adjourned games
+        if g['result'] != "*": # skip adjourned games
             yield parsePGNgame(g, player)
 
-def game2dict(game):
-    # ahem. never mind.
+def gamelist2dict(game):
+    """
+    takes a list of lines representing a pgn game and parses the list into a dict
+    """
+    # ahem. it's either this, or regexp
     data = [ tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game if "]" in elem ]
     data += [ ('comment', elem.split('}')[0].strip('{')) for elem in game if '{' in elem ]
     dictgame = dict([(k.lower(), v.strip('"')) for k, v in data])
     return dictgame
 
 def getGames(pgnfile):
+    """
+    takes a pgn file object and iterates through all lines
+    returns a generator of pgn games as dictionaries
+    """
     game = []
     previous_line_empty = False
     for line in pgnfile.readlines():
@@ -68,19 +82,23 @@ def getGames(pgnfile):
         # ok, we have a non-empty line
         # check if previous line was empty and is now followed by line beginning with '['
         if previous_line_empty and line[0] == '[':
-            # produce dict of so far accumulated lines
-            yield game2dict(game)
-            # reset game
+            # produce dict of so far accumulated lines in game list
+            yield gamelist2dict(game)
+            # reset game list
             game = []
         else:
+            # just accumulate lines into the game list
             game.append(line)
         # if the line had been empty, we'd never gotten here (yield/continue above)
         previous_line_empty = False
-    # don't forget to yield last game
-    dictgame = game2dict(game)
-    yield game2dict(game)
+    # don't forget to yield the very last game
+    yield gamelist2dict(game)
 
 def parsePGNgame(game, player):
+    """
+    takes a pgn game dictionary and player name and remodels the dictionary
+    returns a dictionary ready to be mapped to ChessGame django model
+    """
     try:
         game['whiteelo'] = int(game['whiteelo'])
     except (ValueError, KeyError):
@@ -91,6 +109,8 @@ def parsePGNgame(game, player):
     except (ValueError, KeyError):
         # default elo for guest opponents
         game['blackelo'] = 1100
+    if not ((game['white'] == player) or (game['black'] == player)):
+        raise ValueError("player '%s' is not in the game" % player)
     # sort out white and black
     if game['white'] == player:
         game['self_white'] = True

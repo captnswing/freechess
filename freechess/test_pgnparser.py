@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 import datetime
 import urllib2
-from freechess.pgnparser import game2dict, parsePGNfile, getGames, parsePGNgame
+from freechess.pgnparser import gamelist2dict, parsePGNfile, getGames, parsePGNgame, determineMostCommonPlayer
 import unittest
 import time
 
@@ -68,17 +68,17 @@ Qxb3 26. Qxg7#
 class TestPGNParser(unittest.TestCase):
 
     def test_white_game(self):
-        white_game = game2dict(WHITE_GAME.splitlines())
+        white_game = gamelist2dict(WHITE_GAME.splitlines())
         result = parsePGNgame(white_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing resigns', 'self_elo': 945, 'opponent_name': 'Kleeblatt', 'opponent_elo': 1133, 'self_white': True, 'result': '0-1', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_adjourned_game(self):
-        adjourned_game = game2dict(ADJOURNED_GAME.splitlines())
+        adjourned_game = gamelist2dict(ADJOURNED_GAME.splitlines())
         result = parsePGNgame(adjourned_game, 'captnswing')
         self.assertEqual(adjourned_game['result'], '*')
 
     def test_black_game(self):
-        black_game = game2dict(BLACK_GAME.splitlines())
+        black_game = gamelist2dict(BLACK_GAME.splitlines())
         result = parsePGNgame(black_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing checkmated', 'self_elo': 952, 'opponent_name': 'aidant', 'opponent_elo': 1015, 'self_white': False, 'result': '1-0', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
@@ -105,8 +105,12 @@ class TestPGNfunctions(unittest.TestCase):
             # local
             open('fixtures/eboard.pgn'),
             # remote
-            urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
+#            urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
         )
+
+    def test_most_common_player(self):
+        for tf in self.testfiles:
+            self.assertEqual(determineMostCommonPlayer(getGames(tf)), 'captnswing')
 
     def test_getgames_print(self):
         for tf in self.testfiles:
@@ -116,7 +120,7 @@ class TestPGNfunctions(unittest.TestCase):
     def test_getgames_length(self):
         for tf in self.testfiles:
             itercount = sum(1 for g in getGames(tf))
-            # assert 14 games in testdata
+            # 14 games in testdata
             self.assertEqual(itercount, 14)
 
     def test_parsepgnfile_print(self):
@@ -127,7 +131,7 @@ class TestPGNfunctions(unittest.TestCase):
     def test_parsepgnfile_length(self):
         for tf in self.testfiles:
             itercount = sum(1 for g in parsePGNfile(tf))
-            # assert two games are adjourned and thus skipped
+            # two games are adjourned in the testdata, and thus skipped
             self.assertEqual(itercount, 12)
 
 
