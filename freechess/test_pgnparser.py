@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 import datetime
-from freechess.pgnparser import parsePGNgame, parsePGNfile, getGames
+import urllib2
+from freechess.pgnparser import game2dict, parsePGNfile, getGames, parsePGNgame
 import unittest
 import time
 
@@ -67,35 +68,67 @@ Qxb3 26. Qxg7#
 class TestPGNParser(unittest.TestCase):
 
     def test_white_game(self):
-        white_game = list(getGames(WHITE_GAME))[0]
+        white_game = game2dict(WHITE_GAME.splitlines())
         result = parsePGNgame(white_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing resigns', 'self_elo': 945, 'opponent_name': 'Kleeblatt', 'opponent_elo': 1133, 'self_white': True, 'result': '0-1', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_adjourned_game(self):
-        adjourned_game = list(getGames(ADJOURNED_GAME))
-        self.assertEqual(adjourned_game, [])
+        adjourned_game = game2dict(ADJOURNED_GAME.splitlines())
+        result = parsePGNgame(adjourned_game, 'captnswing')
+        self.assertEqual(adjourned_game['result'], '*')
 
     def test_black_game(self):
-        black_game = list(getGames(BLACK_GAME))[0]
+        black_game = game2dict(BLACK_GAME.splitlines())
         result = parsePGNgame(black_game, 'captnswing')
         self.assertEqual(result, {'comment': 'captnswing checkmated', 'self_elo': 952, 'opponent_name': 'aidant', 'opponent_elo': 1015, 'self_white': False, 'result': '1-0', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
 
-class TestPGNfiles(unittest.TestCase):
+class TestPGNfileformats(unittest.TestCase):
 
     def pgnparser(self, pgnfile):
         t0 = time.time()
         print "parsing %s..." % pgnfile
-        allgames = parsePGNfile(pgnfile)
-        print "parsed %s games in %.2f seconds" % (len(allgames), time.time()-t0)
+        allgames = parsePGNfile(open(pgnfile))
+        print "parsed %s in %.2f seconds" % (pgnfile, time.time()-t0)
 
     def test_eboard(self):
-        self.pgnfile = 'fixtures/eboard.pgn'
-        self.pgnparser(self.pgnfile)
+        self.pgnparser('fixtures/eboard.pgn')
 
     def test_jin(self):
-        self.pgnfile = 'fixtures/jin.pgn'
-        self.pgnparser(self.pgnfile)
+        self.pgnparser('fixtures/jin.pgn')
+
+
+class TestPGNfunctions(unittest.TestCase):
+
+    def setUp(self):
+        self.testfiles = (
+            # local
+            open('fixtures/eboard.pgn'),
+            # remote
+            urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
+        )
+
+    def test_getgames_print(self):
+        for tf in self.testfiles:
+            for game in getGames(tf):
+                print game
+
+    def test_getgames_length(self):
+        for tf in self.testfiles:
+            itercount = sum(1 for g in getGames(tf))
+            # assert 14 games in testdata
+            self.assertEqual(itercount, 14)
+
+    def test_parsepgnfile_print(self):
+        for tf in self.testfiles:
+            for g in parsePGNfile(tf):
+                print g
+
+    def test_parsepgnfile_length(self):
+        for tf in self.testfiles:
+            itercount = sum(1 for g in parsePGNfile(tf))
+            # assert two games are adjourned and thus skipped
+            self.assertEqual(itercount, 12)
 
 
 if __name__ == "__main__":

@@ -19,46 +19,66 @@ from collections import Counter
 
 GAMEFIELDS = ChessGame._meta.get_all_field_names()
 
-def parsePGNfile(pgnfilename):
-    pgndata = open(pgnfilename).read()
-    return parsePGNdata(pgndata)
-
-
-def parsePGNdata(pgndata, player=None):
-    if not player:
-        player = determinePlayer(pgndata)
-    i = 1
-    allgames = []
-    for game in getGames(pgndata):
-        parsedgame = parsePGNgame(game, player)
-        parsedgame['game_nr'] = i
-        allgames.append(parsedgame)
-        i += 1
-    return allgames
-
-
-def determinePlayer(pgndata):
+def determinePlayer(games):
     allplayers = []
-    for game in getGames(pgndata):
-        allplayers.append(game['white'])
-        allplayers.append(game['black'])
+    for g in games:
+        allplayers.append(g['white'])
+        allplayers.append(g['black'])
     cnt = Counter(allplayers)
     likelyplayer = cnt.most_common(1)[0][0]
     return likelyplayer
 
-
-def getGames(pgndata):
-    if '\r' in pgndata: pgndata = pgndata.replace('\r', '') # dos2unix
-    games = pgndata.split('\n\n[') # one empty line followed by line beginning with '['
-    for game in games:
-        data = [tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game.splitlines() if "]" in elem]
-        data += [('comment', elem.split('}')[0].strip('{')) for elem in game.splitlines() if '{' in elem]
-        parsedgame = dict([(k.lower(), v.strip('"')) for k, v in data])
-        if parsedgame['result'] == "*":
-            # skip adjourned games
+def parsePGNfile(pgnfile):
+    player = None
+    allgames = getGames(pgnfile)
+    for g in allgames:
+        if not player:
+            # player not yet determined. get one more game
+            g2 = allgames.next()
+            # determine player that appears in both games
+            player = determinePlayer((g, g2))
+            if not g['result'] == "*": # skip adjourned games
+                yield parsePGNgame(g, player)
+            if not g2['result'] == "*": # skip adjourned games
+                yield parsePGNgame(g2, player)
+            # next please
             continue
-        yield parsedgame
+        # we have a player already
+        if not g['result'] == "*": # skip adjourned games
+            yield parsePGNgame(g, player)
 
+def game2dict(game):
+    # ahem. never mind.
+    data = [ tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game if "]" in elem ]
+    data += [ ('comment', elem.split('}')[0].strip('{')) for elem in game if '{' in elem ]
+    dictgame = dict([(k.lower(), v.strip('"')) for k, v in data])
+    return dictgame
+
+def getGames(pgnfile):
+    game = []
+    previous_line_empty = False
+    for line in pgnfile.readlines():
+        line = line.replace('\r', '').strip() # dos2unix, and strip
+        # check if we have an empty line
+        if not line:
+            # set previous_line_empty
+            previous_line_empty = True
+            # move on, next line please
+            continue
+        # ok, we have a non-empty line
+        # check if previous line was empty and is now followed by line beginning with '['
+        if previous_line_empty and line[0] == '[':
+            # produce dict of so far accumulated lines
+            yield game2dict(game)
+            # reset game
+            game = []
+        else:
+            game.append(line)
+        # if the line had been empty, we'd never gotten here (yield/continue above)
+        previous_line_empty = False
+    # don't forget to yield last game
+    dictgame = game2dict(game)
+    yield game2dict(game)
 
 def parsePGNgame(game, player):
     try:
@@ -71,7 +91,7 @@ def parsePGNgame(game, player):
     except (ValueError, KeyError):
         # default elo for guest opponents
         game['blackelo'] = 1100
-        # sort out white and black
+    # sort out white and black
     if game['white'] == player:
         game['self_white'] = True
         game['self_elo'] = game['whiteelo']
@@ -82,7 +102,7 @@ def parsePGNgame(game, player):
         game['self_elo'] = game['blackelo']
         game['opponent_elo'] = game['whiteelo']
         game['opponent_name'] = game['white']
-        # set date
+    # set date
     y, m, d = game['date'].split('.')
     game['date'] = datetime.date(int(y), int(m), int(d))
     # delete unused keys
@@ -101,5 +121,5 @@ if __name__ == "__main__":
 
     t0 = time.time()
     print "parsing %s..." % pgnfile
-    allgames = parsePGNfile(pgnfile)
-    print "parsed %s games in %.2f seconds" % (len(allgames), time.time() - t0)
+    allgames = parsePGNfile(open(pgnfile))
+    print "parsed %s in %.2f seconds" % (pgnfile, time.time() - t0)

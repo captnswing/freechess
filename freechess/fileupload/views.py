@@ -8,7 +8,7 @@ from freechess.pgnparser import parsePGNfile
 from freechess.stats.models import ChessGame, PGNfile
 
 def handle_uploaded_file(filename):
-    allgames = parsePGNfile(filename)
+    allgames = parsePGNfile(open(filename))
     ChessGame.objects.all().delete()
     for game in allgames:
         _result = ChessGame.objects.create(**game)
