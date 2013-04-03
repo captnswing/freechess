@@ -105,7 +105,7 @@ class TestPGNfunctions(unittest.TestCase):
             # local
             open('fixtures/eboard.pgn'),
             # remote
-#            urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
+           # urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
         )
 
     def test_most_common_player(self):
