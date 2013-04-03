@@ -14,15 +14,15 @@ setup(
     author_email='frank.hoffsummer@gmail.com',
     url='https://bitbucket.org/svtidevelopers/python-utils',
     # install packages, see http://docs.python.org/distutils/setupscript.html#listing-whole-packages
-    package_dir={'': 'src'},
-    packages=find_packages('src'),
+    package_dir={'': '.'},
+    packages=find_packages('.'),
     # include all non-python files under source control, e.g. media/ and templates/ directories
     include_package_data=True,
     # make setuptools work with mercurial, see http://pypi.python.org/pypi/setuptools_hg
     setup_requires=["distribute", "setuptools_hg"],
     # install dependencies
     install_requires=[
-        'django == 1.3',
+        'django',
         'mysql-python',
         'django-piston',
         # libraries for testing
