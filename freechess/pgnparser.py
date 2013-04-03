@@ -132,12 +132,10 @@ def parsePGNgame(game, player):
     return game
 
 if __name__ == "__main__":
+    pgnfile = 'fixtures/eboard.pgn'
     args = sys.argv[1:]
-    if len(args) == 2:
+    if len(args) == 1:
         pgnfile = args[0]
-        player = args[1]
-    else:
-        pgnfile = 'fixtures/eboard.pgn'
 
     t0 = time.time()
     print "parsing %s..." % pgnfile
