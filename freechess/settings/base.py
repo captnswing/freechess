@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 # Django settings for freechess project.
-import os
-PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
+from os.path import join, abspath, dirname
+root = lambda *x: join(abspath(dirname(__file__)), '..', *x)
 
 ADMINS = ((u'Frank Hoffsümmer', 'frank.hoffsummer@gmail.com'),)
 APPEND_SLASH = True
@@ -20,7 +20,7 @@ MIDDLEWARE_CLASSES = (
 )
 
 # templates
-TEMPLATE_DIRS = (os.path.join(PROJECT_PATH, "templates"),)
+TEMPLATE_DIRS = (root("templates"),)
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
@@ -34,7 +34,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 # Absolute path to the directory that holds user uploaded files
-MEDIA_ROOT = os.path.join(PROJECT_PATH, "pgnfiles")
+MEDIA_ROOT = root("pgnfiles")
 
 # URL that handles the media served from MEDIA_ROOT
 MEDIA_URL = '/pgnfiles/'
@@ -71,11 +71,11 @@ TEMPLATE_DEBUG = True
 # staticfiles
 STATIC_URL = '/static/'
 INSTALLED_APPS += ('django.contrib.staticfiles',)
-STATICFILES_DIRS = (os.path.join(PROJECT_PATH, "site_media"),)
+STATICFILES_DIRS = (root("site_media"),)
 TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
 
 # test
-FIXTURE_DIRS = (os.path.join(PROJECT_PATH, "data", "fixtures"),)
+FIXTURE_DIRS = (root("fixtures"),)
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--verbosity=0', ] #'--pdb']
 INSTALLED_APPS += ('django_nose',)
