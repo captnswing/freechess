@@ -4,6 +4,9 @@
     body {
     padding-top: 40px; /* When using the navbar-top-fixed */
     }
+    td.rightalign {
+    text-align: right;
+    }
 {% endblock %}
 
 {% block beforebodyend %}
@@ -21,7 +24,7 @@
             });
 
             $.getJSON('{% url api-monthlyresult %}', function (monthdata) {
-                $.plot($("#monthlyresult"), [monthdata.lost, monthdata.drawn, monthdata.won], {
+                $.plot($("#monthlyresult"), [monthdata[2], monthdata[1], monthdata[0]], {
                     series: {
                         stack: true,
                         bars: {
@@ -31,7 +34,7 @@
                         }
                     },
                     xaxis: {
-                        ticks: monthdata.xlabels
+                        ticks: monthdata[3]
                     }
                 });
             });
@@ -40,7 +43,7 @@
                 $.plot($("#opponentselo"), [opdata.data], {
                     bars: {
                         show: true,
-                        barWidth: 16,
+                        barWidth: 32,
                         align: 'center'
                     }
                 });
@@ -66,127 +69,128 @@
     </div>
 
     <div class="tab-content">
-        <div class="tab-pane active" id="elotrend">
-            <div class="container">
+    <div class="tab-pane active" id="elotrend">
+        <div class="container">
 
-                <h4>playing on average {{ stats.perday|floatformat }} games/day since recording began
-                    on {{ stats.firstdate|date:"d M Y" }}</h4>
+            <p>playing on average {{ stats.perday|floatformat }} games/day since recording began
+                on {{ stats.firstdate|date:"d M Y" }}</p>
 
-                <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
+            <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
 
-                <div style="width:900px;height:420px" id="elohistimg"></div>
-                <div class="row">
-                    <div class="span3">
-                        <h3>current elo: {{ stats.currentelo }}</h3>
-                        <table id="summary" class="table table-condensed">
+            <div style="width:900px;height:420px" id="elohistimg"></div>
+            <div class="row">
+                <div class="span3">
+                    <h3>current elo: {{ stats.currentelo }}</h3>
+                    <table id="summary" class="table table-condensed table-bordered">
+                        <tbody>
+                        <tr>
+                            <td>alltime high
+                            <td class="rightalign">{{ stats.alltime_maxelo }}</td>
+                            <td class="rightalign">{{ stats.alltime_maxelo_date|date:"Y-m-d" }}</td>
+                        </tr>
+                        <tr>
+                            <td>alltime low
+                            <td class="rightalign">{{ stats.alltime_minelo }}</td>
+                            <td class="rightalign">{{ stats.alltime_minelo_date|date:"Y-m-d" }}</td>
+                        </tr>
+                        <tr>
+                            <td>3months high
+                            <td class="rightalign">{{ stats.three_months_maxelo }}</td>
+                            <td class="rightalign">{{ stats.three_months_maxelo_date|date:"Y-m-d" }}</td>
+                        </tr>
+                        <tr>
+                            <td>3months low
+                            <td class="rightalign">{{ stats.three_months_minelo }}</td>
+                            <td class="rightalign">{{ stats.three_months_minelo_date|date:"Y-m-d" }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <table id="lostwon" class="table table-condensed table-bordered">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th class="rightalign"><strong>as white</strong></th>
+                            <th class="rightalign"><strong>as black</strong></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><strong>won</strong></td>
+                            <td class="rightalign">{{ stats.won_as_white }}</td>
+                            <td class="rightalign">{{ stats.won_as_black }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>drawn</strong></td>
+                            <td class="rightalign">{{ stats.drawn_as_white }}</td>
+                            <td class="rightalign">{{ stats.drawn_as_black }}</td>
+                        </tr>
+                        <tr>
+                            <td><strong>lost</strong></td>
+                            <td class="rightalign">{{ stats.lost_as_white }}</td>
+                            <td class="rightalign">{{ stats.lost_as_black }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="span5">
+                    <h3>monthly performance</h3>
+
+                    <div style="width:400px;height:400px" id="monthlyresult"></div>
+                </div>
+
+                <div class="span4">
+                    {% if won_tally or lost_tally %}
+                        <h3>result distribution</h3>
+                        <table id="resulttally" class="table table-condensed table-bordered">
+                            <thead>
+                            <tr>
+                                <th>result</th>
+                                <th class="rightalign">freq.</th>
+                            </tr>
+                            </thead>
                             <tbody>
-                            <tr>
-                                <td>alltime high
-                                <td class="rightalign">{{ stats.alltime_maxelo }}</td>
-                                <td class="rightalign">{{ stats.alltime_maxelo_date|date:"Y-m-d" }}</td>
-                            </tr>
-                            <tr>
-                                <td>alltime low
-                                <td class="rightalign">{{ stats.alltime_minelo }}</td>
-                                <td class="rightalign">{{ stats.alltime_minelo_date|date:"Y-m-d" }}</td>
-                            </tr>
-                            <tr>
-                                <td>3months high
-                                <td class="rightalign">{{ stats.three_months_maxelo }}</td>
-                                <td class="rightalign">{{ stats.three_months_maxelo_date|date:"Y-m-d" }}</td>
-                            </tr>
-                            <tr>
-                                <td>3months low
-                                <td class="rightalign">{{ stats.three_months_minelo }}</td>
-                                <td class="rightalign">{{ stats.three_months_minelo_date|date:"Y-m-d" }}</td>
-                            </tr>
-                            <tr>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                                <td>&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td class="rightalign"><strong>as white</strong></td>
-                                <td class="rightalign"><strong>as black</strong></td>
-                            </tr>
-                            <tr>
-                                <td>won</td>
-                                <td class="rightalign">{{ stats.won_as_white }}</td>
-                                <td class="rightalign">{{ stats.won_as_black }}</td>
-                            </tr>
-                            <tr>
-                                <td>drawn</td>
-                                <td class="rightalign">{{ stats.drawn_as_white }}</td>
-                                <td class="rightalign">{{ stats.drawn_as_black }}</td>
-                            </tr>
-                            <tr>
-                                <td>lost</td>
-                                <td class="rightalign">{{ stats.lost_as_white }}</td>
-                                <td class="rightalign">{{ stats.lost_as_black }}</td>
-                            </tr>
+                            <!-- tally of won games -->
+                            {% for result in won_tally %}
+                                <tr class="success">
+                                    <td>{{ result.0 }}</td>
+                                    <td class="rightalign">{{ result.1 }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            <!-- tally of drawn games -->
+                            {% for result in drawn_tally %}
+                                <tr class="warning">
+                                    <td>{{ result.0 }}</td>
+                                    <td class="rightalign">{{ result.1 }}</td>
+                                </tr>
+                            {% endfor %}
+
+                            <!-- tally of lost games -->
+                            {% for result in lost_tally %}
+                                <tr class="error">
+                                    <td>{{ result.0 }}</td>
+                                    <td class="rightalign">{{ result.1 }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
-                    </div>
-
-                    <div class="span5">
-                        <h3>monthly performance</h3>
-
-                        <div style="width:400px;height:400px" id="monthlyresult"></div>
-                    </div>
-
-                    <div class="span4">
-                        {% if won_tally or lost_tally %}
-                            <h3>result distribution</h3>
-                            <table id="resulttally" class="table table-condensed">
-                                <thead>
-                                <tr>
-                                    <th>result</th>
-                                    <th class="rightalign">freq.</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <!-- tally of won games -->
-                                {% for result in won_tally %}
-                                    <tr class="won">
-                                        <td>{{ result.0 }}</td>
-                                        <td class="rightalign">{{ result.1 }}</td>
-                                    </tr>
-                                {% endfor %}
-
-                                <!-- tally of drawn games -->
-                                {% for result in drawn_tally %}
-                                    <tr class="drawn">
-                                        <td>{{ result.0 }}</td>
-                                        <td class="rightalign">{{ result.1 }}</td>
-                                    </tr>
-                                {% endfor %}
-
-                                <!-- tally of lost games -->
-                                {% for result in lost_tally %}
-                                    <tr class="lost">
-                                        <td>{{ result.0 }}</td>
-                                        <td class="rightalign">{{ result.1 }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        {% endif %}
-                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="tab-pane" id="opponents">
+    <div class="tab-pane" id="opponents">
         <div class="container">
             <div class="row">
                 <div class="span4">
                     <h3>most played opponents</h3>
-                    <table id="mostplayed" class="table table-condensed">
+                    <table id="mostplayed" class="table table-condensed table-striped table-bordered">
                         <thead>
                         <tr>
                             <th>player</th>
-                            <th class="rightalign">won</th>
+                            <th align="right">won</th>
                             <th class="rightalign">draw</th>
                             <th class="rightalign">lost</th>
                         </tr>
@@ -205,31 +209,8 @@
                 </div>
 
                 <div class="span4">
-                    <h3>Oppontents strength</h3>
-                    <table id="summaryopponents" class="table table-condensed">
-                        <tbody>
-                        <tr>
-                            <td>average opponent strength (last 3 months)</td>
-                            <td class="rightalign"></td>
-                            <td class="rightalign">{{ stats.opponentaverage|floatformat }}</td>
-                        </tr>
-                        <tr>
-                            <td>games played against stronger opponents</td>
-                            <td class="rightalign"></td>
-                            <td class="rightalign">{{ stats.stronger|floatformat }}%</td>
-                        </tr>
-                        <tr>
-                            <td>games played against weaker opponents</td>
-                            <td class="rightalign"></td>
-                            <td class="rightalign">{{ stats.weaker|floatformat }}%</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="span4">
                     <h3>top defeated opponents</h3>
-                    <table id="topdefeated" class="table table-condensed">
+                    <table id="topdefeated" class="table table-condensed table-striped table-bordered">
                         <thead>
                         <tr>
                             <th>elo</th>
@@ -250,7 +231,27 @@
                 </div>
             </div>
             <div class="row">
-                <div class="span12">
+                <div class="span4">
+                    <h3>Oppontents strength</h3>
+                    <table id="summaryopponents" class="table table-condensed table-bordered">
+                        <tbody>
+                        <tr>
+                            <td>average opponent strength (last 3 months)</td>
+                            <td class="rightalign">{{ stats.opponentaverage|floatformat }}</td>
+                        </tr>
+                        <tr>
+                            <td>games played against stronger opponents</td>
+                            <td class="rightalign">{{ stats.stronger|floatformat }}%</td>
+                        </tr>
+                        <tr>
+                            <td>games played against weaker opponents</td>
+                            <td class="rightalign">{{ stats.weaker|floatformat }}%</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="span6">
                     <h3>opponentselo</h3>
 
                     <div style="width:400px;height:400px" id="opponentselo"></div>
@@ -259,10 +260,10 @@
         </div>
     </div>
 
-        <div class="tab-pane" id="history">
+    <div class="tab-pane" id="history">
         <div class="container">
             <h3>last 100 games (of {{ stats.total }} in total)</h3>
-            <table class="table table-condensed">
+            <table class="table table-condensed table-hover table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>
