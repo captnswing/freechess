@@ -89,7 +89,7 @@ class TestPGNfileformats(unittest.TestCase):
         t0 = time.time()
         print "parsing %s..." % pgnfile
         allgames = parsePGNfile(open(pgnfile))
-        print "parsed %s in %.2f seconds" % (pgnfile, time.time()-t0)
+        print "parsed %s games in %.2f seconds" % (len(list(allgames)), time.time()-t0)
 
     def test_eboard(self):
         self.pgnparser('fixtures/eboard.pgn')

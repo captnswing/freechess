@@ -20,6 +20,7 @@ from collections import Counter
 
 GAMEFIELDS = ChessGame._meta.get_all_field_names()
 
+
 def determineMostCommonPlayer(games):
     """
     takes a list of pgn games as dictionaries and returns the name of the most common player
@@ -31,6 +32,7 @@ def determineMostCommonPlayer(games):
     cnt = Counter(allplayers)
     most_common_player = cnt.most_common(1)[0][0]
     return most_common_player
+
 
 def parsePGNfile(pgnfile):
     """
@@ -49,20 +51,22 @@ def parsePGNfile(pgnfile):
         yield parsePGNgame(g1, player)
     if g2['result'] != "*": # skip adjourned games
         yield parsePGNgame(g2, player)
-    # go through rest of the generator
+        # go through rest of the generator
     for g in allgames:
         if g['result'] != "*": # skip adjourned games
             yield parsePGNgame(g, player)
+
 
 def gamelist2dict(game):
     """
     takes a list of lines representing a pgn game and parses the list into a dict
     """
     # ahem. it's either this, or regexp
-    data = [ tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game if "]" in elem ]
-    data += [ ('comment', elem.split('}')[0].strip('{')) for elem in game if '{' in elem ]
+    data = [tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game if "]" in elem]
+    data += [('comment', elem.split('}')[0].strip('{')) for elem in game if '{' in elem]
     dictgame = dict([(k.lower(), v.strip('"')) for k, v in data])
     return dictgame
+
 
 def getGames(pgnfile):
     """
@@ -79,7 +83,7 @@ def getGames(pgnfile):
             previous_line_empty = True
             # move on, next line please
             continue
-        # ok, we have a non-empty line
+            # ok, we have a non-empty line
         # check if previous line was empty and is now followed by line beginning with '['
         if previous_line_empty and line[0] == '[':
             # produce dict of so far accumulated lines in game list
@@ -89,10 +93,11 @@ def getGames(pgnfile):
         else:
             # just accumulate lines into the game list
             game.append(line)
-        # if the line had been empty, we'd never gotten here (yield/continue above)
+            # if the line had been empty, we'd never gotten here (yield/continue above)
         previous_line_empty = False
-    # don't forget to yield the very last game
+        # don't forget to yield the very last game
     yield gamelist2dict(game)
+
 
 def parsePGNgame(game, player):
     """
@@ -111,7 +116,7 @@ def parsePGNgame(game, player):
         game['blackelo'] = 1100
     if not ((game['white'] == player) or (game['black'] == player)):
         raise ValueError("player '%s' is not in the game" % player)
-    # sort out white and black
+        # sort out white and black
     if game['white'] == player:
         game['self_white'] = True
         game['self_elo'] = game['whiteelo']
@@ -122,7 +127,7 @@ def parsePGNgame(game, player):
         game['self_elo'] = game['blackelo']
         game['opponent_elo'] = game['whiteelo']
         game['opponent_name'] = game['white']
-    # set date
+        # set date
     y, m, d = game['date'].split('.')
     game['date'] = datetime.date(int(y), int(m), int(d))
     # delete unused keys
@@ -131,6 +136,7 @@ def parsePGNgame(game, player):
             del game[key]
     return game
 
+
 if __name__ == "__main__":
     pgnfile = 'fixtures/eboard.pgn'
     args = sys.argv[1:]
@@ -138,6 +144,10 @@ if __name__ == "__main__":
         pgnfile = args[0]
 
     t0 = time.time()
-    print "parsing %s..." % pgnfile
+    print "importing %s..." % pgnfile
     allgames = parsePGNfile(open(pgnfile))
-    print "parsed %s games in %.2f seconds" % (len(list(allgames)), time.time() - t0)
+    ChessGame.objects.all().delete()
+    for i, game in enumerate(allgames):
+        game['game_nr'] = i+1
+        _result = ChessGame.objects.create(**game)
+    print "imported %s games in %.2f seconds" % (i, time.time() - t0)
