@@ -22,7 +22,7 @@ setup(
     setup_requires=["distribute", "setuptools_hg"],
     # install dependencies
     install_requires=[
-        'django',
+        'django<1.5',
         'mysql-python',
         'django-piston',
         # libraries for testing
