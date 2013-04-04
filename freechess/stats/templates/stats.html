@@ -9,10 +9,13 @@
     }
 {% endblock %}
 
-{% block beforebodyend %}
+{% block extraheaders %}
     <title>{{ player }}'s chess stats on freechess.org</title>
-    <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.js"></script>
-    <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.stack.js"></script>
+{% endblock %}
+
+{% block beforebodyend %}
+    <script type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.stack.js"></script>
     <script>
         $(document).ready(function () {
             $.getJSON('{% url api-elohist %}', function (elodata) {
@@ -29,6 +32,7 @@
                         stack: true,
                         bars: {
                             show: true,
+                            lineWidth: 0.5,
                             barWidth: 0.8,
                             align: 'center'
                         }
@@ -72,14 +76,25 @@
     <div class="tab-pane active" id="elotrend">
         <div class="container">
 
-            <p>playing on average {{ stats.perday|floatformat }} games/day since recording began
-                on {{ stats.firstdate|date:"d M Y" }}</p>
+{#            <p>playing on average {{ stats.perday|floatformat }} games/day since recording began#}
+{#                on {{ stats.firstdate|date:"d M Y" }}</p>#}
 
-            <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
-
-            <div style="width:900px;height:420px" id="elohistimg"></div>
             <div class="row">
-                <div class="span3">
+                <div class="span6">
+                    <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
+
+                    <div style="width:600px;height:420px" id="elohistimg"></div>
+                </div>
+
+                <div class="span4 offset1">
+                    <h3>monthly performance</h3>
+
+                    <div style="width:400px;height:420px" id="monthlyresult"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="span4">
                     <h3>current elo: {{ stats.currentelo }}</h3>
                     <table id="summary" class="table table-condensed table-bordered">
                         <tbody>
@@ -133,13 +148,7 @@
                     </table>
                 </div>
 
-                <div class="span5">
-                    <h3>monthly performance</h3>
-
-                    <div style="width:400px;height:400px" id="monthlyresult"></div>
-                </div>
-
-                <div class="span4">
+                <div class="span5 offset1">
                     {% if won_tally or lost_tally %}
                         <h3>result distribution</h3>
                         <table id="resulttally" class="table table-condensed table-bordered">
@@ -190,7 +199,7 @@
                         <thead>
                         <tr>
                             <th>player</th>
-                            <th align="right">won</th>
+                            <th class="rightalign">won</th>
                             <th class="rightalign">draw</th>
                             <th class="rightalign">lost</th>
                         </tr>
@@ -263,7 +272,7 @@
     <div class="tab-pane" id="history">
         <div class="container">
             <h3>last 100 games (of {{ stats.total }} in total)</h3>
-            <table class="table table-condensed table-hover table-bordered">
+            <table class="table table-condensed table-striped table-bordered">
                 <thead>
                 <tr>
                     <th>#</th>

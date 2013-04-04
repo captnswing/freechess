@@ -71,6 +71,7 @@ def monthlyresult(request):
     lost = [lost_games_permonth.get(month, 0) for month in months]
     drawn = [drawn_games_permonth.get(month, 0) for month in months]
     won = [won_games_permonth.get(month, 0) for month in months]
+    xticks = zip(range(len(lost)), [m.strftime("%b '%y") for m in months])
     response_data = [
         {
             'label': 'won',
@@ -87,7 +88,7 @@ def monthlyresult(request):
             'color': '#cc0000',
             'data': zip(range(len(lost)), lost)
         },
-        zip(range(len(lost)), [m.strftime("%b '%y") for m in months])
+        xticks[::2]
     ]
     return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
 
