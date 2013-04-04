@@ -6,6 +6,7 @@ from freechess.stats.models import ChessGame
 from dateutil.relativedelta import relativedelta
 import datetime
 
+
 def chessStats(request):
     # some general variables
     player = 'captnswing'
@@ -20,7 +21,7 @@ def chessStats(request):
     y, m = today.timetuple()[:2]
 
     # some basic stats
-    elotrend =  ChessGame.objects.elo_trend()
+    elotrend = ChessGame.objects.elo_trend()
     all_elos = list(allgames.values_list('self_elo'))
     stats = {
         "startdate": ChessGame.objects.latest().date + relativedelta(months=-9),
@@ -41,23 +42,25 @@ def chessStats(request):
         # result tallies
         # retrieve a list of all results interactively using
         # sorted(list(set([ ' '.join(elem.values()[0].split()[1:]) for elem in ChessGame.objects.all().values('comment') ])))
-        win_comments = [ ('resigns', 'opponent resigns'),
-                         ('forfeits on time', 'opponent forfeits on time'),
-                         ('checkmated', 'opponent checkmated'),
-                         ('forfeits by disconnection', 'opponent forfeits by disconnection'), ]
+        win_comments = [('resigns', 'opponent resigns'),
+                        ('forfeits on time', 'opponent forfeits on time'),
+                        ('checkmated', 'opponent checkmated'),
+                        ('forfeits by disconnection', 'opponent forfeits by disconnection'), ]
 
-        lost_comments = [ (player + ' resigns', player + ' resigns'),
-                          (player + ' forfeits on time', player + ' forfeits on time'),
-                          (player + ' checkmated', player + ' checkmated'),
-                          (player + ' forfeits by disconnection', player + ' forfeits by disconnection'), ]
+        lost_comments = [(player + ' resigns', player + ' resigns'),
+                         (player + ' forfeits on time', player + ' forfeits on time'),
+                         (player + ' checkmated', player + ' checkmated'),
+                         (player + ' forfeits by disconnection', player + ' forfeits by disconnection'), ]
 
-        draw_comments = [ ('player has mating material', 'neither player has mating material'),
-                          ('drawn by repetition', 'game drawn by repetition'),
-                          ('ran out of time and %s has no material to mate' % player, 'opponent ran out of time and %s can\'t mate' % player),
-                          ('%s ran out of time and' % player, '%s ran out of time and opponent can\'t mate' % player),
-                          ('drawn because both players ran out of time', 'game drawn because both players ran out of time'),
-                          ('drawn by stalemate', 'game drawn by stalemate'),
-                          ('drawn by mutual agreement', 'game drawn by mutual agreement'), ]
+        draw_comments = [('player has mating material', 'neither player has mating material'),
+                         ('drawn by repetition', 'game drawn by repetition'),
+                         ('ran out of time and %s has no material to mate' % player,
+                          'opponent ran out of time and %s can\'t mate' % player),
+                         ('%s ran out of time and' % player, '%s ran out of time and opponent can\'t mate' % player),
+                         ('drawn because both players ran out of time',
+                          'game drawn because both players ran out of time'),
+                         ('drawn by stalemate', 'game drawn by stalemate'),
+                         ('drawn by mutual agreement', 'game drawn by mutual agreement'), ]
 
         won_tally = []
         for filterstring, cleartext in win_comments:
@@ -65,11 +68,13 @@ def chessStats(request):
 
         drawn_tally = []
         for filterstring, cleartext in draw_comments:
-            drawn_tally.append((cleartext, ChessGame.objects.drawn_games().filter(comment__contains=filterstring).count()))
+            drawn_tally.append(
+                (cleartext, ChessGame.objects.drawn_games().filter(comment__contains=filterstring).count()))
 
         lost_tally = []
         for filterstring, cleartext in lost_comments:
-            lost_tally.append((cleartext, ChessGame.objects.lost_games().filter(comment__contains=filterstring).count()))
+            lost_tally.append(
+                (cleartext, ChessGame.objects.lost_games().filter(comment__contains=filterstring).count()))
     else:
         won_tally = lost_tally = drawn_tally = []
 
@@ -81,7 +86,7 @@ def chessStats(request):
         latest_date = allgames.latest().date
         three_months_ago = latest_date + relativedelta(months=-3)
         three_months_games = allgames.filter(date__range=(three_months_ago, today))
-    # three_months_games.aggregate(Max('self_elo'), Min('self_elo'))
+        # three_months_games.aggregate(Max('self_elo'), Min('self_elo'))
     three_months_elotrend = three_months_games.values_list('game_nr', 'date', 'self_elo')
     three_months_elos = list(three_months_games.values_list('self_elo'))
     stats["three_months_maxelo"] = max(three_months_elos)[0]
@@ -128,7 +133,7 @@ def chessStats(request):
         if myresult == '0': score[3] += 1
         most_frequent_opponents[game.opponent_name] = score
 
-    most_frequent_opponents = [ (v, k) for k, v in most_frequent_opponents.items() ]
+    most_frequent_opponents = [(v, k) for k, v in most_frequent_opponents.items()]
     most_frequent_opponents = sorted(most_frequent_opponents, reverse=True)
 
     strongest_opponents_won = ChessGame.objects.won_games().values_list('opponent_elo', 'opponent_name', 'date')
@@ -136,12 +141,12 @@ def chessStats(request):
 
     # return the response
     return render_to_response('stats.html', {
-            'player': player,
-            'stats': stats,
-            'won_tally': won_tally,
-            'drawn_tally': drawn_tally,
-            'lost_tally': lost_tally,
-            'most_frequent_opponents': most_frequent_opponents[:15],
-            'strongest_opponents_won': strongest_opponents_won[:15],
-            'last100games': allgames.reverse().filter(game_nr__range=(number_of_games-100,number_of_games))
-        }, context_instance=RequestContext(request))
+        'player': player,
+        'stats': stats,
+        'won_tally': won_tally,
+        'drawn_tally': drawn_tally,
+        'lost_tally': lost_tally,
+        'most_frequent_opponents': most_frequent_opponents[:15],
+        'strongest_opponents_won': strongest_opponents_won[:15],
+        'last100games': allgames.reverse().filter(game_nr__range=(number_of_games - 100, number_of_games))
+    }, context_instance=RequestContext(request))

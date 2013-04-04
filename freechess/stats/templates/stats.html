@@ -1,260 +1,239 @@
 {% extends "base.html" %}
 
-{% block extraheaders %}
-<title>{{ player }}'s chess stats on freechess.org</title>
-    <style type="text/css">
-        .myspan-12 {
-            width: 458px;
-            float: left;
-        }
-
-        .myspan-10 {
-            width: 390px;
-            float: left;
-        }
-
-        .myspan-7 {
-            width: 258px;
-            float: left;
-        }
-
-        div.clear {
-            clear: both;
-            margin: 0;
-        }
-
-        td.rightalign {
-            text-align: right;
-        }
-
-        table#summary tr:nth-child(2n) td, tr.even td {
-            background: none;
-        }
-
-        table#resulttally tr:nth-child(2n) td, tr.even td {
-            background: none;
-        }
-
-        table#resulttally .won {
-            background-color: #A3CF93;
-        }
-
-        table#resulttally .drawn {
-            background-color: #FAD8A7;
-        }
-
-        table#resulttally .lost {
-            background-color: #C75D74;
-        }
-
-        table#mostplayed, table#topdefeated, table#resulttally {
-            border: 1px dotted #666666;
-        }
-    </style>
-    <script type="text/javascript">
-    $(document).ready(function() {
-        var elohistoptions = {
-            chart: {
-                renderTo: 'elohistimg',
-                type: 'line',
-                backgroundColor: null,
-                spacingLeft: 0
-            },
-            title: {
-                text: '',
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                type: 'datetime',
-                showLastLabel: true
-            },
-            yAxis: [{ // left y-axis
-                min: 1000,
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }, { // right y axis
-                min: 1000,
-                linkedTo: 0,
-                opposite: true,
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }],
-            plotOptions: {
-                line: {
-                    lineWidth: 2,
-                    marker: {
-                        enabled: false,
-                        states: {
-                            hover: {
-                                enabled: true,
-                                radius: 5
-                            }
-                        }
-                    },
-                    shadow: false,
-                    states: {
-                        hover: {
-                            lineWidth: 1
-                        }
-                    }
-                }
-            },
-            legend: false,
-            tooltip: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            series: []
-        };
-
-        jQuery.getJSON('{% url api-elohist %}', function(chartoptions) {
-            console.log(chartoptions);
-            elohistoptions.series = chartoptions['series'];
-            userchart = new Highcharts.Chart(elohistoptions);
-        });
-        var monthlyresultoptions = {
-            chart: {
-                renderTo: 'monthlyresult',
-                type: 'column',
-                backgroundColor: null,
-                spacingLeft: 0
-            },
-            title: {
-                text: '',
-            },
-            subtitle: {
-                text: ''
-            },
-            yAxis: [{ // left y-axis
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }, { // right y axis
-                linkedTo: 0,
-                opposite: true,
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }],
-            plotOptions: {
-                column: {
-                   stacking: 'normal',
-                   borderWidth: 0,
-                   groupPadding: 0,
-                   pointPadding: 0.05,
-                   shadow: false
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            tooltip: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            series: []
-        };
-
-        jQuery.getJSON('{% url api-monthlyresult %}', function(chartoptions) {
-            console.log(chartoptions);
-            monthlyresultoptions.series = chartoptions['series'];
-            userchart = new Highcharts.Chart(monthlyresultoptions);
-        });
-        var opponentselooptions = {
-            chart: {
-                renderTo: 'opponentselo',
-                type: 'column',
-                backgroundColor: null,
-                spacingLeft: 0
-            },
-            title: {
-                text: '',
-            },
-            subtitle: {
-                text: ''
-            },
-            yAxis: [{ // left y-axis
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }, { // right y axis
-                linkedTo: 0,
-                opposite: true,
-                title: {
-                    text: null
-                },
-                showFirstLabel: false
-            }],
-            plotOptions: {
-                column: {
-                   stacking: 'normal',
-                   borderWidth: 0,
-                   groupPadding: 0,
-                   pointPadding: 0.05,
-                   shadow: false
-                }
-            },
-            legend: {
-                enabled: false
-            },
-            tooltip: {
-                enabled: false
-            },
-            credits: {
-                enabled: false
-            },
-            series: []
-        };
-
-        jQuery.getJSON('{% url api-opponentselo %}', function(chartoptions) {
-            console.log(chartoptions);
-            opponentselooptions.series = chartoptions['series'];
-            userchart = new Highcharts.Chart(opponentselooptions);
-        });
-    });
-    </script>
+{% block beforebodyend %}
+    <title>{{ player }}'s chess stats on freechess.org</title>
+    <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.js"></script>
     <script>
-        $(function() {
-            $("#tabs").tabs();
+        $(document).ready(function () {
+            $.getJSON('{% url api-elohist %}', function (elodata) {
+                $.plot($("#elohistimg"), [elodata.data], {
+                    xaxis: {
+                        mode: "time"
+                    }
+                });
+            });
         });
     </script>
-{% endblock %}
 
-{% block heading %}
-    <h2>{{ player }}'s chess stats on <a href="http://freechess.org">freechess.org</a></h2>
-    <h4>playing on average {{ stats.perday|floatformat }} games/day since recording began
-        on {{ stats.firstdate|date:"d M Y" }}</h4>
+    {#    <script type="text/javascript">#}
+    {#        $(document).ready(function () {#}
+    {#            var elohistoptions = {#}
+    {#                chart: {#}
+    {#                    renderTo: 'elohistimg',#}
+    {#                    type: 'line',#}
+    {#                    backgroundColor: null,#}
+    {#                    spacingLeft: 0#}
+    {#                },#}
+    {#                title: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                subtitle: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                xAxis: {#}
+    {#                    type: 'datetime',#}
+    {#                    showLastLabel: true#}
+    {#                },#}
+    {#                yAxis: [#}
+    {#                    { // left y-axis#}
+    {#                        min: 1000,#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    },#}
+    {#                    { // right y axis#}
+    {#                        min: 1000,#}
+    {#                        linkedTo: 0,#}
+    {#                        opposite: true,#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    }#}
+    {#                ],#}
+    {#                plotOptions: {#}
+    {#                    line: {#}
+    {#                        lineWidth: 2,#}
+    {#                        marker: {#}
+    {#                            enabled: false,#}
+    {#                            states: {#}
+    {#                                hover: {#}
+    {#                                    enabled: true,#}
+    {#                                    radius: 5#}
+    {#                                }#}
+    {#                            }#}
+    {#                        },#}
+    {#                        shadow: false,#}
+    {#                        states: {#}
+    {#                            hover: {#}
+    {#                                lineWidth: 1#}
+    {#                            }#}
+    {#                        }#}
+    {#                    }#}
+    {#                },#}
+    {#                legend: false,#}
+    {#                tooltip: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                credits: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                series: []#}
+    {#            };#}
+    {##}
+    {#            jQuery.getJSON('{% url api-elohist %}', function (chartoptions) {#}
+    {#                console.log(chartoptions);#}
+    {#                elohistoptions.series = chartoptions['series'];#}
+    {#                userchart = new Highcharts.Chart(elohistoptions);#}
+    {#            });#}
+    {#            var monthlyresultoptions = {#}
+    {#                chart: {#}
+    {#                    renderTo: 'monthlyresult',#}
+    {#                    type: 'column',#}
+    {#                    backgroundColor: null,#}
+    {#                    spacingLeft: 0#}
+    {#                },#}
+    {#                title: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                subtitle: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                yAxis: [#}
+    {#                    { // left y-axis#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    },#}
+    {#                    { // right y axis#}
+    {#                        linkedTo: 0,#}
+    {#                        opposite: true,#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    }#}
+    {#                ],#}
+    {#                plotOptions: {#}
+    {#                    column: {#}
+    {#                        stacking: 'normal',#}
+    {#                        borderWidth: 0,#}
+    {#                        groupPadding: 0,#}
+    {#                        pointPadding: 0.05,#}
+    {#                        shadow: false#}
+    {#                    }#}
+    {#                },#}
+    {#                legend: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                tooltip: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                credits: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                series: []#}
+    {#            };#}
+    {##}
+    {#            jQuery.getJSON('{% url api-monthlyresult %}', function (chartoptions) {#}
+    {#                console.log(chartoptions);#}
+    {#                monthlyresultoptions.series = chartoptions['series'];#}
+    {#                userchart = new Highcharts.Chart(monthlyresultoptions);#}
+    {#            });#}
+    {#            var opponentselooptions = {#}
+    {#                chart: {#}
+    {#                    renderTo: 'opponentselo',#}
+    {#                    type: 'column',#}
+    {#                    backgroundColor: null,#}
+    {#                    spacingLeft: 0#}
+    {#                },#}
+    {#                title: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                subtitle: {#}
+    {#                    text: ''#}
+    {#                },#}
+    {#                yAxis: [#}
+    {#                    { // left y-axis#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    },#}
+    {#                    { // right y axis#}
+    {#                        linkedTo: 0,#}
+    {#                        opposite: true,#}
+    {#                        title: {#}
+    {#                            text: null#}
+    {#                        },#}
+    {#                        showFirstLabel: false#}
+    {#                    }#}
+    {#                ],#}
+    {#                plotOptions: {#}
+    {#                    column: {#}
+    {#                        stacking: 'normal',#}
+    {#                        borderWidth: 0,#}
+    {#                        groupPadding: 0,#}
+    {#                        pointPadding: 0.05,#}
+    {#                        shadow: false#}
+    {#                    }#}
+    {#                },#}
+    {#                legend: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                tooltip: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                credits: {#}
+    {#                    enabled: false#}
+    {#                },#}
+    {#                series: []#}
+    {#            };#}
+    {##}
+    {#            jQuery.getJSON('{% url api-opponentselo %}', function (chartoptions) {#}
+    {#                console.log(chartoptions);#}
+    {#                opponentselooptions.series = chartoptions['series'];#}
+    {#                userchart = new Highcharts.Chart(opponentselooptions);#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
 {% endblock %}
 
 {% block content %}
-    <div id="tabs">
-    <ul>
-        <li><a href="#elotrend">stats & elotrend</a></li>
-        <li><a href="#opponents">opponents{% if won_tally or lost_tally %} & results{% endif %}</a></li>
-        <li><a href="#history">last 100 games</a></li>
-    </ul>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">{{ player }}'s chess stats</a>
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#elotrend">stats & elotrend</a></li>
+                    <li><a href="#opponents">opponents{% if won_tally or lost_tally %} & results{% endif %}</a></li>
+                    <li><a href="#history">last 100 games</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
-    <div id="elotrend">
+    <div class="container">
+        <h2></h2>
+        <h4>playing on average {{ stats.perday|floatformat }} games/day since recording began
+            on {{ stats.firstdate|date:"d M Y" }}</h4>
+
+        <div id="tabs">
+        </div>
+    </div>
+
+    <div class="container">
         <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
 
-        <div style="width: 1000px;" id="elohistimg"></div>
+        <div style="width:900px;height:420px" id="elohistimg"></div>
+    </div>
 
-        <div class="myspan-12">
+    <div class="container">
+        <div class="span3">
             <h3>current elo: {{ stats.currentelo }}</h3>
-            <table id="summary">
+            <table id="summary" class="table table-condensed">
                 <tbody>
                 <tr>
                     <td>alltime high
@@ -305,15 +284,18 @@
             </table>
         </div>
 
-        <div class="myspan-14 prepend-2">
+        <div class="span7">
             <h3>monthly performance</h3>
-            <div style="width: 500px;" id="monthlyresult"></div>
-        </div>
 
-        <div class="myspan-10 prepend-2">
+            <div id="monthlyresult"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="span5">
             {% if won_tally or lost_tally %}
                 <h3>result distribution</h3>
-                <table id="resulttally">
+                <table id="resulttally" class="table table-condensed">
                     <thead>
                     <tr>
                         <th>result</th>
@@ -348,16 +330,13 @@
                 </table>
             {% endif %}
         </div>
-
-        <div class="clear"></div>
-
     </div>
 
+    <div class="container">
 
-    <div id="opponents">
-        <div class="myspan-7">
+        <div class="span4">
             <h3>most played opponents</h3>
-            <table id="mostplayed">
+            <table id="mostplayed" class="table table-condensed">
                 <thead>
                 <tr>
                     <th>player</th>
@@ -379,9 +358,9 @@
             </table>
         </div>
 
-        <div class="myspan-7">
+        <div class="span4">
             <h3>Oppontents strength</h3>
-            <table id="summaryopponents">
+            <table id="summaryopponents" class="table table-condensed">
                 <tbody>
                 <tr>
                     <td>average opponent strength (last 3 months)</td>
@@ -402,9 +381,9 @@
             </table>
         </div>
 
-        <div class="myspan-7 prepend-2">
+        <div class="span4">
             <h3>top defeated opponents</h3>
-            <table id="topdefeated">
+            <table id="topdefeated" class="table table-condensed">
                 <thead>
                 <tr>
                     <th>elo</th>
@@ -423,21 +402,20 @@
                 </tbody>
             </table>
         </div>
-
-        <div class="myspan-14 prepend-2">
-            <h3>opponentselo</h3>
-            <div style="width: 500px;" id="opponentselo"></div>
-        </div>
-
-        <div class="clear"></div>
-
     </div>
 
+    <div class="container">
+        <div class="12">
+            <h3>opponentselo</h3>
 
-    <div id="history">
-        <div>
+            <div id="opponentselo"></div>
+        </div>
+    </div>
+
+    <div class="container" id="history">
+        <div class="span12">
             <h3>last 100 games (of {{ stats.total }} in total)</h3>
-            <table>
+            <table class="table table-condensed">
                 <thead>
                 <tr>
                     <th>#</th>
@@ -473,5 +451,4 @@
             </table>
         </div>
     </div>
-    </div>  {# end of tabs #}
 {% endblock %}

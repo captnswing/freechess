@@ -19,12 +19,14 @@ def server_error(request, template_name='500.html'):
         'STATIC_URL': settings.STATIC_URL
     })))
 
+
 def createhist(seq, binsize):
     h = {}
     for elem in seq:
         bin = divmod(elem, binsize)[0] * binsize
         h[bin] = h.get(bin, 0) + 1
     return h
+
 
 def pythonversion(request):
     return http.HttpResponse(sys.version)

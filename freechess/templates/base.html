@@ -1,38 +1,55 @@
-<!DOCTYPE HTML>
-<html>
-
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	{% include "blueprint_headers.html" %}
-    {% include "jquery_headers.html" %}
-    {% include "highcharts_headers.html" %}
-	{% block extraheaders %}
-	{% endblock %}
-	<style type="text/css">
-	/*<![CDATA[*/
-		/* overriding blueprint's screen.css */
-		.showgrid { background: url({{ STATIC_URL }}/images/grid.png); }
-		a { text-decoration: none; }
-		a:hover { text-decoration: underline; }
-        div.container { width: 90%; }
-	    {% block customcss %}
-		{% endblock %}
-	/*]]>*/
-	</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" rel="stylesheet" />
+{#    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/cupertino/jquery-ui.css" rel="stylesheet" />#}
+    <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/themes/pepper-grinder/jquery-ui.css" rel="stylesheet" />
+
+    <link href="{{ STATIC_URL }}/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen" />
+
+    <style type="text/css">
+    /*<![CDATA[*/
+    {% block customcss %}
+    {% endblock %}
+    /*]]>*/
+    </style>
+
+    {% block extraheaders %}
+    {% endblock %}
+
 </head>
 
 <body>
-	<div class="container">
-	    {% block heading %}
-		{% endblock %}
-	</div>
 
-	<div class="container">
-	    {% block content %}
-		{% endblock %}
-	</div>
+{% block content %}
+{% endblock %}
 
-	{% include "googleanalytics.html" %}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/i18n/jquery-ui-i18n.min.js"></script>
+<script src="{{ STATIC_URL }}/bootstrap/js/bootstrap.min.js"></script>
+<link href="{{ STATIC_URL }}/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+<script src="{{ STATIC_URL }}js/highcharts.js" type="text/javascript"></script>
+{% block beforebodyend %}
+{% endblock %}
+
+{% if not debug %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-37303356-2']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{% endif %}
 </body>
-
 </html>

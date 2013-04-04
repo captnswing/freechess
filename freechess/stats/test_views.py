@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
+
 class TestViews(TestCase):
     """tests if the relevant views work"""
 
@@ -39,6 +40,7 @@ class TestAPI(TestCase):
     def test_opponentselo(self):
         response = self.client.get(reverse('api-opponentselo'))
         self.failUnlessEqual(response.status_code, 200)
+
 
 if __name__ == "__main__":
     unittest.main()

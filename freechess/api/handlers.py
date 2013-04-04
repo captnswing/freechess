@@ -8,15 +8,16 @@ from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 
 # http://stackoverflow.com/q/1077414/41404
-# multiply by 1000 as Highcharts expects milliseconds
+# multiply by 1000 as Flot expects milliseconds
 from freechess.stats.util import createhist
 
 dthandler = lambda obj: 1000*time.mktime(obj.timetuple()) if (isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date)) else None
 
+
 def elohist(request):
     if not ChessGame.objects.count():
         raise Exception, 'no data in database. try running importgames first.'
-    startdate = ChessGame.objects.latest().date + relativedelta(months=-9)
+    startdate = ChessGame.objects.latest().date + relativedelta(months=-15)
     allgames = ChessGame.objects.all().filter(date__gte=startdate)
     last_date = None
     elosum_per_day = 0
@@ -36,11 +37,10 @@ def elohist(request):
         averaged_elotrend[g.date] = average_elo
         last_date = g.date
     x = sorted(averaged_elotrend.keys())
-    y = [ averaged_elotrend[d] for d in x ]
+    y = [averaged_elotrend[d] for d in x]
     response_data = {
-        'series': [
-            {'data': zip(x, y)}
-        ]
+        'label': 'test',
+        'data': zip(x, y)
     }
     return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
 
@@ -66,10 +66,10 @@ def monthlyresult(request):
     # compile the data
     latestmonth = ChessGame.objects.latest().date.replace(day=1)
     sixteenMonthsEarlier = latestmonth + relativedelta(months=-14)
-    months = [ m.date(  ) for m in rrule.rrule(rrule.MONTHLY, dtstart=sixteenMonthsEarlier, until=latestmonth) ]
-    lost = [ lost_games_permonth.get(month, 0) for month in months ]
-    drawn = [ drawn_games_permonth.get(month, 0) for month in months ]
-    won = [ won_games_permonth.get(month, 0) for month in months ]
+    months = [m.date() for m in rrule.rrule(rrule.MONTHLY, dtstart=sixteenMonthsEarlier, until=latestmonth)]
+    lost = [lost_games_permonth.get(month, 0) for month in months]
+    drawn = [drawn_games_permonth.get(month, 0) for month in months]
+    won = [won_games_permonth.get(month, 0) for month in months]
     response_data = {
         'series': [
             {
@@ -94,7 +94,7 @@ def opponentselo(request):
     if not ChessGame.objects.count():
         raise Exception, 'no data in database. try running importgames first.'
     last_won_games = ChessGame.objects.won_games()[:100]
-    hist = createhist([ g.opponent_elo for g in last_won_games ], 50)
+    hist = createhist([g.opponent_elo for g in last_won_games], 50)
     response_data = {
         'series': [
             {'data': sorted(hist.items())}
