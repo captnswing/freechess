@@ -70,22 +70,15 @@ def monthlyresult(request):
     lost = [lost_games_permonth.get(month, 0) for month in months]
     drawn = [drawn_games_permonth.get(month, 0) for month in months]
     won = [won_games_permonth.get(month, 0) for month in months]
+    # won            'color': '#00aa00',
+    # drawn          'color': '#ff9933',
+    # lost           'color': '#cc0000',
     response_data = {
-        'series': [
-            {
-                'color': '#00aa00',
-                'name': 'won',
-                'data': won
-            }, {
-                'color': '#ff9933',
-                'name': 'drawn',
-                'data': drawn
-            }, {
-                'color': '#cc0000',
-                'name': 'lost',
-                'data': lost
-            }
-        ]
+        'label': 'test',
+        'xlabels': zip(range(len(lost)), months),
+        'lost': zip(range(len(lost)), lost),
+        'drawn': zip(range(len(drawn)), drawn),
+        'won': zip(range(len(won)), won)
     }
     return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
 
@@ -96,8 +89,6 @@ def opponentselo(request):
     last_won_games = ChessGame.objects.won_games()[:100]
     hist = createhist([g.opponent_elo for g in last_won_games], 50)
     response_data = {
-        'series': [
-            {'data': sorted(hist.items())}
-        ]
+        'data': sorted(hist.items())
     }
     return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")

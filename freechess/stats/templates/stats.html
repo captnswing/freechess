@@ -3,6 +3,7 @@
 {% block beforebodyend %}
     <title>{{ player }}'s chess stats on freechess.org</title>
     <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.js"></script>
+    <script language="javascript" type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.stack.js"></script>
     <script>
         $(document).ready(function () {
             $.getJSON('{% url api-elohist %}', function (elodata) {
@@ -12,193 +13,38 @@
                     }
                 });
             });
+
+            // http://www.saltycrane.com/blog/2010/03/jquery-flot-stacked-bar-chart-example
+            $.getJSON('{% url api-monthlyresult %}', function (monthdata) {
+                $.plot($("#monthlyresult"), [monthdata.lost, monthdata.drawn, monthdata.won], {
+                    series: {
+                        stack: true,
+                        bars: {
+                            show: true,
+                            barWidth: 0.8,
+                            align: 'center'
+                        }
+                    },
+                    xaxis: {
+                        ticks: monthdata.xlabels
+                    }
+                });
+            });
+
+            $.getJSON('{% url api-opponentselo %}', function (opdata) {
+                $.plot($("#opponentselo"), [opdata.data], {
+                    series: {
+                        bars: {
+                            show: true,
+                            barWidth: 0.8,
+                            align: 'center'
+                        }
+                    }
+                });
+            });
+
         });
     </script>
-
-    {#    <script type="text/javascript">#}
-    {#        $(document).ready(function () {#}
-    {#            var elohistoptions = {#}
-    {#                chart: {#}
-    {#                    renderTo: 'elohistimg',#}
-    {#                    type: 'line',#}
-    {#                    backgroundColor: null,#}
-    {#                    spacingLeft: 0#}
-    {#                },#}
-    {#                title: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                subtitle: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                xAxis: {#}
-    {#                    type: 'datetime',#}
-    {#                    showLastLabel: true#}
-    {#                },#}
-    {#                yAxis: [#}
-    {#                    { // left y-axis#}
-    {#                        min: 1000,#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    },#}
-    {#                    { // right y axis#}
-    {#                        min: 1000,#}
-    {#                        linkedTo: 0,#}
-    {#                        opposite: true,#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    }#}
-    {#                ],#}
-    {#                plotOptions: {#}
-    {#                    line: {#}
-    {#                        lineWidth: 2,#}
-    {#                        marker: {#}
-    {#                            enabled: false,#}
-    {#                            states: {#}
-    {#                                hover: {#}
-    {#                                    enabled: true,#}
-    {#                                    radius: 5#}
-    {#                                }#}
-    {#                            }#}
-    {#                        },#}
-    {#                        shadow: false,#}
-    {#                        states: {#}
-    {#                            hover: {#}
-    {#                                lineWidth: 1#}
-    {#                            }#}
-    {#                        }#}
-    {#                    }#}
-    {#                },#}
-    {#                legend: false,#}
-    {#                tooltip: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                credits: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                series: []#}
-    {#            };#}
-    {##}
-    {#            jQuery.getJSON('{% url api-elohist %}', function (chartoptions) {#}
-    {#                console.log(chartoptions);#}
-    {#                elohistoptions.series = chartoptions['series'];#}
-    {#                userchart = new Highcharts.Chart(elohistoptions);#}
-    {#            });#}
-    {#            var monthlyresultoptions = {#}
-    {#                chart: {#}
-    {#                    renderTo: 'monthlyresult',#}
-    {#                    type: 'column',#}
-    {#                    backgroundColor: null,#}
-    {#                    spacingLeft: 0#}
-    {#                },#}
-    {#                title: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                subtitle: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                yAxis: [#}
-    {#                    { // left y-axis#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    },#}
-    {#                    { // right y axis#}
-    {#                        linkedTo: 0,#}
-    {#                        opposite: true,#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    }#}
-    {#                ],#}
-    {#                plotOptions: {#}
-    {#                    column: {#}
-    {#                        stacking: 'normal',#}
-    {#                        borderWidth: 0,#}
-    {#                        groupPadding: 0,#}
-    {#                        pointPadding: 0.05,#}
-    {#                        shadow: false#}
-    {#                    }#}
-    {#                },#}
-    {#                legend: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                tooltip: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                credits: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                series: []#}
-    {#            };#}
-    {##}
-    {#            jQuery.getJSON('{% url api-monthlyresult %}', function (chartoptions) {#}
-    {#                console.log(chartoptions);#}
-    {#                monthlyresultoptions.series = chartoptions['series'];#}
-    {#                userchart = new Highcharts.Chart(monthlyresultoptions);#}
-    {#            });#}
-    {#            var opponentselooptions = {#}
-    {#                chart: {#}
-    {#                    renderTo: 'opponentselo',#}
-    {#                    type: 'column',#}
-    {#                    backgroundColor: null,#}
-    {#                    spacingLeft: 0#}
-    {#                },#}
-    {#                title: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                subtitle: {#}
-    {#                    text: ''#}
-    {#                },#}
-    {#                yAxis: [#}
-    {#                    { // left y-axis#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    },#}
-    {#                    { // right y axis#}
-    {#                        linkedTo: 0,#}
-    {#                        opposite: true,#}
-    {#                        title: {#}
-    {#                            text: null#}
-    {#                        },#}
-    {#                        showFirstLabel: false#}
-    {#                    }#}
-    {#                ],#}
-    {#                plotOptions: {#}
-    {#                    column: {#}
-    {#                        stacking: 'normal',#}
-    {#                        borderWidth: 0,#}
-    {#                        groupPadding: 0,#}
-    {#                        pointPadding: 0.05,#}
-    {#                        shadow: false#}
-    {#                    }#}
-    {#                },#}
-    {#                legend: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                tooltip: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                credits: {#}
-    {#                    enabled: false#}
-    {#                },#}
-    {#                series: []#}
-    {#            };#}
-    {##}
-    {#            jQuery.getJSON('{% url api-opponentselo %}', function (chartoptions) {#}
-    {#                console.log(chartoptions);#}
-    {#                opponentselooptions.series = chartoptions['series'];#}
-    {#                userchart = new Highcharts.Chart(opponentselooptions);#}
-    {#            });#}
-    {#        });#}
-    {#    </script>#}
 {% endblock %}
 
 {% block content %}
@@ -216,12 +62,8 @@
     </div>
 
     <div class="container">
-        <h2></h2>
         <h4>playing on average {{ stats.perday|floatformat }} games/day since recording began
             on {{ stats.firstdate|date:"d M Y" }}</h4>
-
-        <div id="tabs">
-        </div>
     </div>
 
     <div class="container">
@@ -287,7 +129,7 @@
         <div class="span7">
             <h3>monthly performance</h3>
 
-            <div id="monthlyresult"></div>
+            <div style="width:400px;height:400px" id="monthlyresult"></div>
         </div>
     </div>
 
@@ -408,7 +250,7 @@
         <div class="12">
             <h3>opponentselo</h3>
 
-            <div id="opponentselo"></div>
+            <div style="width:400px;height:400px" id="opponentselo"></div>
         </div>
     </div>
 
