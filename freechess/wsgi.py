@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'freechess.settings.local'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'freechess.settings.prod'
 from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
