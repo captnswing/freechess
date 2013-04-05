@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
-from django.conf.urls.defaults import *
+from django.conf.urls import *
+
 
 urlpatterns = patterns('freechess.api.handlers',
     url(r'^elohist', 'elohist', name='api-elohist'),

@@ -18,7 +18,7 @@
     <script type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.stack.js"></script>
     <script>
         $(document).ready(function () {
-            $.getJSON('{% url api-elohist %}', function (elodata) {
+            $.getJSON('{% url "api-elohist" %}', function (elodata) {
                 $.plot($("#elohistimg"), [elodata.data], {
                     xaxis: {
                         mode: "time"
@@ -26,7 +26,7 @@
                 });
             });
 
-            $.getJSON('{% url api-monthlyresult %}', function (monthdata) {
+            $.getJSON('{% url "api-monthlyresult" %}', function (monthdata) {
                 $.plot($("#monthlyresult"), [monthdata[2], monthdata[1], monthdata[0]], {
                     series: {
                         stack: true,
@@ -43,7 +43,7 @@
                 });
             });
 
-            $.getJSON('{% url api-opponentselo %}', function (opdata) {
+            $.getJSON('{% url "api-opponentselo" %}', function (opdata) {
                 $.plot($("#opponentselo"), [opdata.data], {
                     bars: {
                         show: true,

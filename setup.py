@@ -22,7 +22,7 @@ setup(
     setup_requires=["distribute", "setuptools_hg"],
     # install dependencies
     install_requires=[
-        'django<1.5',
+        'django',
         'mysql-python',
         'psycopg2',
         'dj_database_url'
