@@ -51,31 +51,8 @@ INSTALLED_APPS = (
     'freechess.api',
 )
 
-# database configuration
-DATABASE_SUPPORTS_TRANSACTIONS = False
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'captnswing',
-        'USER': 'root',
-        'PASSWORD': 'mp109',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
-# debug
-DEBUG = True
-TEMPLATE_DEBUG = True
-
 # staticfiles
 STATIC_URL = '/static/'
 INSTALLED_APPS += ('django.contrib.staticfiles',)
 STATICFILES_DIRS = (root("site_media"),)
 TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
-
-# test
-FIXTURE_DIRS = (root("fixtures"),)
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--verbosity=0', ] #'--pdb']
-INSTALLED_APPS += ('django_nose',)
