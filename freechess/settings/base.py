@@ -3,6 +3,8 @@
 from os.path import join, abspath, dirname
 root = lambda *x: join(abspath(dirname(__file__)), '..', *x)
 
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
 ADMINS = ((u'Frank Hoffsümmer', 'frank.hoffsummer@gmail.com'),)
 APPEND_SLASH = True
 MANAGERS = ADMINS
