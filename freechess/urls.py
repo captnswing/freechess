@@ -1,6 +1,5 @@
 #-*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
 
@@ -28,6 +27,3 @@ if settings.DEBUG:
     urlpatterns += patterns('',
         url('^flot/$', direct_to_template, { 'template': 'flot.html' })
     )
-
-# static files
-urlpatterns += staticfiles_urlpatterns()
