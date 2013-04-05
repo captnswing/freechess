@@ -1,16 +1,42 @@
 {% extends "base.html" %}
 {% load i18n %}
 
-{% block extraheaders %}
-<title>{% trans 'Server error (500)' %}</title>
+{% block customcss %}
+    body {
+    padding-top: 40px; /* When using the navbar-top-fixed */
+    }
 {% endblock %}
-
-{% block heading %}
-<h2>500 error - {% trans 'Server error (500)' %}</h2>
+{% block extraheaders %}
+    <title>{% trans 'Server error (500)' %}</title>
 {% endblock %}
 
 {% block content %}
-<div class="span-24 last">
-<p>{% trans "There's been an error. It's been reported to the site administrators via e-mail and should be fixed shortly. Thanks for your patience." %}</p>
-</div>
+    <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand" href="/">freechess stats</a>
+                <ul class="nav nav-tabs" data-tabs="tabs">
+                    <li class="active"><a data-toggle="tab" href="#elotrend">stats & elotrend</a></li>
+                    <li><a data-toggle="tab" href="#opponents">opponents & results</a></li>
+                    <li><a data-toggle="tab" href="#history">last 100 games</a></li>
+                </ul>
+                <ul class="nav pull-right hidden-phone">
+                    <li>
+                        <span><a class="btn btn-primary"
+                              href="https://bitbucket.org/captnswing/freechess">code@bitbucket</a></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>
+            {% trans 'Server error (500)' %}
+        </h2>
+
+        <p>
+            {% trans "There's been an error. It's been reported to the site administrators via e-mail and should be fixed shortly. Thanks for your patience." %}
+        </p>
+    </div>
 {% endblock %}

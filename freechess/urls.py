@@ -2,6 +2,7 @@
 from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from django.conf import settings
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 # from http://www.arthurkoziel.com/2009/01/15/passing-mediaurl-djangos-500-error-view/
 handler500 = 'freechess.stats.util.server_error'
@@ -25,5 +26,9 @@ urlpatterns += patterns('',
 if settings.DEBUG:
     # testing flot.js
     urlpatterns += patterns('',
-        url('^flot/$', direct_to_template, { 'template': 'flot.html' })
+        url('^flot/$', direct_to_template, { 'template': 'flot.html' }),
+        url(r'^500/$', 'django.views.generic.simple.direct_to_template', {'template': '500.html'}),
+        url(r'^404/$', 'django.views.generic.simple.direct_to_template', {'template': '404.html'})
     )
+
+urlpatterns += staticfiles_urlpatterns()
