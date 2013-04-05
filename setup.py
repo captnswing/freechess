@@ -24,6 +24,8 @@ setup(
     install_requires=[
         'django<1.5',
         'mysql-python',
+        'psycopg2',
+        'dj_database_url'
         'django-piston',
         # libraries for testing
         'nose',

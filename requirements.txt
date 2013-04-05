@@ -3,3 +3,4 @@ South
 psycopg2
 python-dateutil<2
 gunicorn
+dj-database-url
