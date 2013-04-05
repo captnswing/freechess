@@ -73,11 +73,12 @@
     </div>
 
     <div class="tab-content">
+
     <div class="tab-pane active" id="elotrend">
         <div class="container">
 
-{#            <p>playing on average {{ stats.perday|floatformat }} games/day since recording began#}
-{#                on {{ stats.firstdate|date:"d M Y" }}</p>#}
+            {#            <p>playing on average {{ stats.perday|floatformat }} games/day since recording began#}
+            {#                on {{ stats.firstdate|date:"d M Y" }}</p>#}
 
             <div class="row">
                 <div class="span6">
@@ -217,7 +218,7 @@
                     </table>
                 </div>
 
-                <div class="span4">
+                <div class="span4 offset1">
                     <h3>top defeated opponents</h3>
                     <table id="topdefeated" class="table table-condensed table-striped table-bordered">
                         <thead>
@@ -260,10 +261,10 @@
                     </table>
                 </div>
 
-                <div class="span6">
+                <div class="span4 offset1">
                     <h3>opponentselo</h3>
 
-                    <div style="width:400px;height:400px" id="opponentselo"></div>
+                    <div style="width:400px;height:380px" id="opponentselo"></div>
                 </div>
             </div>
         </div>
@@ -308,5 +309,6 @@
             </table>
         </div>
     </div>
+
     </div>
 {% endblock %}
