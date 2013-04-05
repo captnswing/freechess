@@ -13,7 +13,7 @@ urlpatterns = patterns('freechess.stats',
 
 # data admin
 urlpatterns += patterns('freechess.fileupload',
-    url(r'^upload/', include('fileupload.urls')),
+    url(r'^upload/', include('freechess.fileupload.urls')),
 )
 
 # api
