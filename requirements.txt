@@ -1,10 +1,5 @@
-Django
+Django<1.5
 South
-coverage
-distribute
-django-nose
-nose
 psycopg2
 python-dateutil<2
-unittest2
-wsgiref
+gunicorn
