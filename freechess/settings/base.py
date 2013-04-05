@@ -54,5 +54,5 @@ INSTALLED_APPS = (
 # staticfiles
 STATIC_URL = '/static/'
 INSTALLED_APPS += ('django.contrib.staticfiles',)
-STATICFILES_DIRS = (root("site_media"),)
+STATICFILES_DIRS = (root("static-media"),)
 TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
