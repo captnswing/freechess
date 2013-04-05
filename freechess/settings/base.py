@@ -33,6 +33,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.static',
 )
 
 # Absolute path to the directory that holds user uploaded files
@@ -48,13 +49,33 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.staticfiles',
     'freechess.fileupload',
     'freechess.stats',
     'freechess.api',
 )
 
 # staticfiles
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = ''
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
-INSTALLED_APPS += ('django.contrib.staticfiles',)
-STATICFILES_DIRS = (root("static-media"),)
-TEMPLATE_CONTEXT_PROCESSORS += ('django.core.context_processors.static',)
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    root('static-media'),
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
