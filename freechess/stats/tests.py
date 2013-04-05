@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 class TestViews(TestCase):
     """tests if the relevant views work"""
 
-    fixtures = ['testdata.xml.gz']
+    fixtures = ['testdata.json']
 
     def test_index(self):
         response = self.client.get(reverse('stats-index'))
@@ -27,7 +27,7 @@ class TestViews(TestCase):
 class TestAPI(TestCase):
     """tests the JSON api"""
 
-    fixtures = ['testdata.xml.gz']
+    fixtures = ['testdata.json']
 
     def test_elohist(self):
         response = self.client.get(reverse('api-elohist'))

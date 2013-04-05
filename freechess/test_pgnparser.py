@@ -103,7 +103,7 @@ class TestPGNfunctions(unittest.TestCase):
     def setUp(self):
         self.testfiles = (
             # local
-            open('fixtures/eboard.pgn'),
+            open('stats/fixtures/eboard.pgn'),
             # remote
            # urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
         )

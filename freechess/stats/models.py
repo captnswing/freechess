@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.conf import settings
 
+
 class GameManager(models.Manager):
     def won_games(self):
         return super(GameManager, self).get_query_set().filter((Q(self_white=True) & Q(result="1-0")) | (Q(self_white=False) & Q(result="0-1")))
