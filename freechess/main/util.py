@@ -21,7 +21,3 @@ def createhist(seq, binsize):
         hbin = divmod(elem, binsize)[0] * binsize
         h[hbin] = h.get(hbin, 0) + 1
     return h
-
-
-def pythonversion(request):
-    return http.HttpResponse(sys.version)

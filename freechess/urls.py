@@ -11,8 +11,7 @@ urlpatterns = patterns('freechess.main',
         url(r'^$', 'stats.chessStats', name='main-index'),
         url(r'^api/elohist', 'api.elohist', name='api-elohist'),
         url(r'^api/monthlyresult', 'api.monthlyresult', name='api-monthlyresult'),
-        url(r'^api/opponentselo', 'api.opponentselo', name='api-opponentselo'),
-        url(r'^pythonversion', 'util.pythonversion', name='main-pythonversion'),
+        url(r'^api/opponentselo', 'api.opponentselo', name='api-opponentselo')
     )
 
 if settings.DEBUG:
