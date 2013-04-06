@@ -1,7 +1,6 @@
 #-*- coding: utf-8 -*-
+# settings/heroku.py
 import os
-
-# settings/prod.py
 from .base import *
 
 # Parse database configuration from $DATABASE_URL
