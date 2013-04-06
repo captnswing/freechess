@@ -15,9 +15,3 @@ DATABASES = {
 # debug
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
-
-# test
-FIXTURE_DIRS = (root("fixtures"),)
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--verbosity=0', ] #'--pdb']
-INSTALLED_APPS += ('django_nose',)
