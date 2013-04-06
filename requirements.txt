@@ -1,6 +1,5 @@
 Django>=1.5
-South
-psycopg2
-python-dateutil<2
-gunicorn
 dj-database-url
+python-dateutil<2
+psycopg2
+gunicorn
