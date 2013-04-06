@@ -19,7 +19,6 @@ dist
 distribute*.tar.gz
 include
 lib
-localsettings.py
 nbproject
 nosetests.xml
-freechess/pgnfiles
+freechess.db
