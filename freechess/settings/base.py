@@ -37,7 +37,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 # Absolute path to the directory that holds user uploaded files
-MEDIA_ROOT = root("pgnfiles")
+MEDIA_ROOT = root("uploaded_pgnfiles")
 
 # URL that handles the media served from MEDIA_ROOT
 MEDIA_URL = '/pgnfiles/'
