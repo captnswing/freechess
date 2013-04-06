@@ -5,12 +5,12 @@ from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
-handler500 = 'freechess.stats.util.server_error'
+handler500 = 'freechess.main.util.server_error'
 
 # index
-urlpatterns = patterns('freechess.stats',
-    url(r'^$', 'stats.chessStats', name='stats-index'),
-    url(r'^pythonversion', 'util.pythonversion', name='stats-pythonversion'),
+urlpatterns = patterns('freechess.main',
+    url(r'^$', 'stats.chessStats', name='main-index'),
+    url(r'^pythonversion', 'util.pythonversion', name='main-pythonversion'),
 )
 
 # api

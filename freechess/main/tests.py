@@ -10,7 +10,7 @@ class TestViews(TestCase):
     fixtures = ['testdata.json']
 
     def test_index(self):
-        response = self.client.get(reverse('stats-index'))
+        response = self.client.get(reverse('main-index'))
         self.failUnlessEqual(response.status_code, 200)
 
     def test_elohist(self):

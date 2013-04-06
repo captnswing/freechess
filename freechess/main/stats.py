@@ -2,7 +2,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseServerError
 from django.template import RequestContext
-from freechess.stats.models import ChessGame
+from freechess.main.models import ChessGame
 from dateutil.relativedelta import relativedelta
 import datetime
 
