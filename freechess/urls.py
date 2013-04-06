@@ -7,16 +7,13 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 handler500 = 'freechess.main.util.server_error'
 
-# index
 urlpatterns = patterns('freechess.main',
-    url(r'^$', 'stats.chessStats', name='main-index'),
-    url(r'^pythonversion', 'util.pythonversion', name='main-pythonversion'),
-)
-
-# api
-urlpatterns += patterns('',
-    url(r'^api/', include('freechess.api.urls')),
-)
+        url(r'^$', 'stats.chessStats', name='main-index'),
+        url(r'^api/elohist', 'api.elohist', name='api-elohist'),
+        url(r'^api/monthlyresult', 'api.monthlyresult', name='api-monthlyresult'),
+        url(r'^api/opponentselo', 'api.opponentselo', name='api-opponentselo'),
+        url(r'^pythonversion', 'util.pythonversion', name='main-pythonversion'),
+    )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
@@ -25,6 +22,6 @@ if settings.DEBUG:
         # testing custom error pages
         url(r'^500/$', TemplateView.as_view(template_name='500.html')),
         url(r'^404/$', TemplateView.as_view(template_name='404.html'))
-)
+    )
 
 urlpatterns += staticfiles_urlpatterns()
