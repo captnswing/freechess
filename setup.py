@@ -8,11 +8,11 @@ from setuptools import setup, find_packages
 setup(
     # provide basic metadata
     name="freechess",
-    version=0.8,
+    version=1.0,
     author=u'Frank Hoffsümmer',
     description='django app to import and visualize freechess.org chess PGN files',
     author_email='frank.hoffsummer@gmail.com',
-    url='https://bitbucket.org/svtidevelopers/python-utils',
+    url='https://bitbucket.org/captnswing/freechess',
     # install packages, see http://docs.python.org/distutils/setupscript.html#listing-whole-packages
     package_dir={'': '.'},
     packages=find_packages('.'),
@@ -22,11 +22,10 @@ setup(
     setup_requires=["distribute", "setuptools_hg"],
     # install dependencies
     install_requires=[
-        'django',
+        'django>=1.5',
         'mysql-python',
         'psycopg2',
         'dj_database_url'
-        'django-piston',
         # libraries for testing
         'nose',
         'coverage',
