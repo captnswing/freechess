@@ -2,7 +2,6 @@
 from django.conf import settings
 from django import http
 from django.template import Context, loader
-import sys
 
 
 def server_error(request):
