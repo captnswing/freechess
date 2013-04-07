@@ -148,5 +148,5 @@ def chessStats(request):
         'lost_tally': lost_tally,
         'most_frequent_opponents': most_frequent_opponents[:15],
         'strongest_opponents_won': strongest_opponents_won[:15],
-        'last100games': allgames.reverse().filter(game_nr__range=(number_of_games - 100, number_of_games))
+        'last100games': allgames.reverse()[number_of_games - 100, number_of_games]
     }, context_instance=RequestContext(request))
