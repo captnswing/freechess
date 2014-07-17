@@ -92,10 +92,10 @@ class TestPGNfileformats(unittest.TestCase):
         print "parsed %s games in %.2f seconds" % (len(list(allgames)), time.time()-t0)
 
     def test_eboard(self):
-        self.pgnparser('fixtures/eboard.pgn')
+        self.pgnparser('main/fixtures/eboard.pgn')
 
     def test_jin(self):
-        self.pgnparser('fixtures/jin.pgn')
+        self.pgnparser('main/fixtures/jin.pgn')
 
 
 class TestPGNfunctions(unittest.TestCase):
@@ -103,7 +103,7 @@ class TestPGNfunctions(unittest.TestCase):
     def setUp(self):
         self.testfiles = (
             # local
-            open('stats/fixtures/eboard.pgn'),
+            open('main/fixtures/eboard.pgn'),
             # remote
            # urllib2.urlopen('http://freechess.s3.amazonaws.com/eboard_testdata.pgn'),
         )

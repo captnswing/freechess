@@ -15,7 +15,7 @@ example call:
 import sys
 import time
 import datetime
-from freechess.stats.models import ChessGame
+from freechess.main.models import ChessGame
 from collections import Counter
 
 GAMEFIELDS = ChessGame._meta.get_all_field_names()
@@ -138,7 +138,7 @@ def parsePGNgame(game, player):
 
 
 if __name__ == "__main__":
-    pgnfile = 'fixtures/eboard.pgn'
+    pgnfile = '/Users/hoffsummer/.jin/captnswing.pgn'
     args = sys.argv[1:]
     if len(args) == 1:
         pgnfile = args[0]
