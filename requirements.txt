@@ -1,5 +1,5 @@
 Django>=1.5
 dj-database-url
-python-dateutil<2
+python-dateutil
 psycopg2
 gunicorn
