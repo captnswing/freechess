@@ -1,0 +1,9 @@
+- hosts: freechess-vm
+  remote_user: vagrant
+  sudo: yes
+
+  roles:
+    - ansible-elasticsearch
+
+  vars_files:
+    - vars/my-vars.yml
