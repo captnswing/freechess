@@ -1,5 +1,7 @@
+Flask
 Django>=1.5
 dj-database-url
 python-dateutil
 psycopg2
 gunicorn
+pyelasticsearch

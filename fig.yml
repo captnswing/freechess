@@ -1,0 +1,39 @@
+web:
+  build: .
+  volumes:
+    - .:/code/
+  environment:
+    - PYTHONPATH=.
+    - DJANGO_SETTINGS_MODULE=freechess.settings.fig
+  command: python manage.py runserver 0.0.0.0:8000
+  ports:
+    - "8000"
+#  links:
+#    - db
+#    - es
+#esdata:
+#  image: dockerfile/elasticsearch
+#  volumes:
+#    - /data
+#  command: true
+#es:
+#  image: dockerfile/elasticsearch
+#  volumes_from:
+#    - esdata
+#  ports:
+#    - "9200"
+#    - "9300"
+#dbdata:
+#  image: postgres:latest
+#  volumes:
+#    - /var/lib/postgresql
+#  command: true
+#db:
+#  image: postgres:latest
+#  volumes_from:
+#    - dbdata
+#  ports:
+#    - "5432"
+#  environment:
+#    - USER=postgres
+#    - DB=postgres

@@ -15,10 +15,10 @@ example call:
 import sys
 import time
 import datetime
-from freechess.main.models import ChessGame
 from collections import Counter
 
-GAMEFIELDS = ChessGame._meta.get_all_field_names()
+#GAMEFIELDS = ChessGame._meta.get_all_field_names()
+GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white', 'timecontrol']
 
 
 def determineMostCommonPlayer(games):
@@ -144,10 +144,10 @@ if __name__ == "__main__":
         pgnfile = args[0]
 
     t0 = time.time()
-    print "importing %s..." % pgnfile
+    i = 0
+    print "parsing %s..." % pgnfile
     allgames = parsePGNfile(open(pgnfile))
-    ChessGame.objects.all().delete()
     for i, game in enumerate(allgames):
         game['game_nr'] = i+1
-        _result = ChessGame.objects.create(**game)
-    print "imported %s games in %.2f seconds" % (i, time.time() - t0)
+        print game
+    print "parsed %s games in %.2f seconds" % (i, time.time() - t0)

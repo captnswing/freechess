@@ -1,0 +1,7 @@
+.dockerignore
+.git
+.gitignore
+.idea
+LICENSE.txt
+README.md
+TODO.md
