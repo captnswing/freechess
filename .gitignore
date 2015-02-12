@@ -9,13 +9,10 @@
 .project
 .pydevproject
 .settings
-.svn
-bin
 build
 dist
 include
 lib
-nbproject
 nosetests.xml
 freechess.db
 uploaded_pgnfiles
