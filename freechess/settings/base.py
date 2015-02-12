@@ -50,7 +50,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.staticfiles',
-    'freechess.main',
+    'freechess',
 )
 
 # staticfiles

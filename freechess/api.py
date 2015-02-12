@@ -3,13 +3,13 @@ import datetime
 import time
 import json
 from django.http import HttpResponse
-from freechess.main.models import ChessGame
+from freechess.models import ChessGame
 from dateutil.relativedelta import relativedelta
 from dateutil import rrule
 
 # http://stackoverflow.com/q/1077414/41404
 # multiply by 1000 as Flot expects milliseconds
-from freechess.main.util import createhist
+from freechess.util import createhist
 
 dthandler = lambda obj: 1000 * time.mktime(obj.timetuple()) if (
     isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date)) else None

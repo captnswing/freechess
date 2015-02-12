@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from django.conf.urls import *
 from django.views.generic import TemplateView
 from django.conf import settings
@@ -7,7 +7,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 handler500 = 'freechess.main.util.server_error'
 
-urlpatterns = patterns('freechess.main',
+urlpatterns = patterns('freechess',
         url(r'^$', 'stats.chessStats', name='main-index'),
         url(r'^api/elohist', 'api.elohist', name='api-elohist'),
         url(r'^api/monthlyresult', 'api.monthlyresult', name='api-monthlyresult'),
