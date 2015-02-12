@@ -1,8 +1,9 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Django settings for freechess project.
 from os.path import join, abspath, dirname
 root = lambda *x: join(abspath(dirname(__file__)), '..', *x)
 
+ALLOWED_HOSTS = []
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ADMINS = ((u'Frank Hoffsümmer', 'frank.hoffsummer@gmail.com'),)
