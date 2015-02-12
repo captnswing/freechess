@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import datetime
 import urllib2
 from freechess.pgnparser import gamelist2dict, parsePGNfile, getGames, parsePGNgame, determineMostCommonPlayer
