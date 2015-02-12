@@ -3,11 +3,16 @@ from django.conf.urls import *
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib import admin
 
 
 handler500 = 'freechess.main.util.server_error'
 
-urlpatterns = patterns('freechess',
+urlpatterns = patterns('',
+                       url(r'^admin/', include(admin.site.urls)),
+                       )
+
+urlpatterns += patterns('freechess',
         url(r'^$', 'stats.chessStats', name='main-index'),
         url(r'^api/elohist', 'api.elohist', name='api-elohist'),
         url(r'^api/monthlyresult', 'api.monthlyresult', name='api-monthlyresult'),

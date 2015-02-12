@@ -1,0 +1,16 @@
+-   fields:
+        username: admin
+        # password is 'admin'
+        password: pbkdf2_sha256$15000$EOC80xmRSCpC$nA+xztFpKWsC2ImpUFhBtQP6gQUgTAn/z8LxACYaqWo=
+        first_name: Administrator
+        last_name: ''
+        email: ''
+        is_active: true
+        is_staff: true
+        is_superuser: true
+        groups: []
+        user_permissions: []
+        date_joined: 2015-01-01 12:00:00
+        last_login: 2015-01-01 12:00:00
+    model: auth.user
+    pk: 1
