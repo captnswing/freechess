@@ -1,22 +1,12 @@
-{% extends "base.html" %}
-
-{% block customcss %}
-    body { padding-top: 70px; }
-    td.rightalign {
-    text-align: right;
-    }
-{% endblock %}
+{% extends "base_freechess.html" %}
 
 {% block extraheaders %}
     <title>{{ player }}'s chess stats on freechess.org</title>
 {% endblock %}
 
-{% block heading %}
-{% include 'navbar.html' %}
-{% endblock %}
-
 {% block beforebodyend %}
-    <script>
+{% include "flot_headers.html" %}
+<script>
         $(document).ready(function () {
             $.getJSON('{% url "api-elohist" %}', function (elodata) {
                 $.plot($("#elohistimg"), [elodata.data], {
@@ -58,7 +48,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="tab-content">
     <div class="tab-pane active" id="elotrend">
         <div class="container">
@@ -73,7 +62,7 @@
                     <div style="width:600px;height:420px" id="elohistimg"></div>
                 </div>
 
-                <div class="col-md-4 offset1">
+                <div class="col-md-4 col-md-offset-1">
                     <h3>monthly performance</h3>
 
                     <div style="width:400px;height:420px" id="monthlyresult"></div>
@@ -83,7 +72,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <h3>current elo: {{ stats.currentelo }}</h3>
-                    <table id="summary" class="table table-condensed table-bordered">
+                    <table id="summary" class="table table-condensed">
                         <tbody>
                         <tr>
                             <td>alltime high
@@ -135,7 +124,7 @@
                     </table>
                 </div>
 
-                <div class="col-md-5 offset1">
+                <div class="col-md-5 col-md-offset-1">
                     {% if won_tally or lost_tally %}
                         <h3>result distribution</h3>
                         <table id="resulttally" class="table table-condensed table-bordered">
@@ -204,7 +193,7 @@
                     </table>
                 </div>
 
-                <div class="col-md-4 offset1">
+                <div class="col-md-4 col-md-offset-1">
                     <h3>top defeated opponents</h3>
                     <table id="topdefeated" class="table table-condensed table-striped table-bordered">
                         <thead>
@@ -247,9 +236,8 @@
                     </table>
                 </div>
 
-                <div class="col-md-4 offset1">
+                <div class="col-md-4 col-md-offset-1">
                     <h3>opponentselo</h3>
-
                     <div style="width:400px;height:380px" id="opponentselo"></div>
                 </div>
             </div>
