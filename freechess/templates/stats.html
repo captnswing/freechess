@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block customcss %}
-    body {
-    padding-top: 40px; /* When using the navbar-top-fixed */
-    }
+    body { padding-top: 70px; }
     td.rightalign {
     text-align: right;
     }
@@ -13,9 +11,11 @@
     <title>{{ player }}'s chess stats on freechess.org</title>
 {% endblock %}
 
+{% block heading %}
+{% include 'navbar.html' %}
+{% endblock %}
+
 {% block beforebodyend %}
-    <script type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}/jquery.flot.stack.js"></script>
     <script>
         $(document).ready(function () {
             $.getJSON('{% url "api-elohist" %}', function (elodata) {
@@ -58,28 +58,8 @@
 {% endblock %}
 
 {% block content %}
-    <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand" href="/">{{ player }}'s chess stats</a>
-                <ul class="nav nav-tabs" data-tabs="tabs">
-                    <li class="active"><a data-toggle="tab" href="#elotrend">stats & elotrend</a></li>
-                    <li><a data-toggle="tab" href="#opponents">opponents{% if won_tally or lost_tally %} &
-                        results{% endif %}</a></li>
-                    <li><a data-toggle="tab" href="#history">last 100 games</a></li>
-                </ul>
-                <ul class="nav pull-right hidden-phone">
-                    <li>
-                        <span><a class="btn btn-primary"
-                              href="https://bitbucket.org/captnswing/freechess">code@bitbucket</a></span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
-    <div class="tab-content">
-
+<div class="tab-content">
     <div class="tab-pane active" id="elotrend">
         <div class="container">
 
@@ -87,13 +67,13 @@
             {#                on {{ stats.firstdate|date:"d M Y" }}</p>#}
 
             <div class="row">
-                <div class="span6">
+                <div class="col-md-6">
                     <h3>elotrend {{ stats.startdate|date:"M Y" }} - {{ stats.enddate|date:"M Y" }}</h3>
 
                     <div style="width:600px;height:420px" id="elohistimg"></div>
                 </div>
 
-                <div class="span4 offset1">
+                <div class="col-md-4 offset1">
                     <h3>monthly performance</h3>
 
                     <div style="width:400px;height:420px" id="monthlyresult"></div>
@@ -101,7 +81,7 @@
             </div>
 
             <div class="row">
-                <div class="span4">
+                <div class="col-md-4">
                     <h3>current elo: {{ stats.currentelo }}</h3>
                     <table id="summary" class="table table-condensed table-bordered">
                         <tbody>
@@ -155,7 +135,7 @@
                     </table>
                 </div>
 
-                <div class="span5 offset1">
+                <div class="col-md-5 offset1">
                     {% if won_tally or lost_tally %}
                         <h3>result distribution</h3>
                         <table id="resulttally" class="table table-condensed table-bordered">
@@ -200,7 +180,7 @@
     <div class="tab-pane" id="opponents">
         <div class="container">
             <div class="row">
-                <div class="span4">
+                <div class="col-md-4">
                     <h3>most played opponents</h3>
                     <table id="mostplayed" class="table table-condensed table-striped table-bordered">
                         <thead>
@@ -224,7 +204,7 @@
                     </table>
                 </div>
 
-                <div class="span4 offset1">
+                <div class="col-md-4 offset1">
                     <h3>top defeated opponents</h3>
                     <table id="topdefeated" class="table table-condensed table-striped table-bordered">
                         <thead>
@@ -247,7 +227,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="span4">
+                <div class="col-md-4">
                     <h3>Oppontents strength</h3>
                     <table id="summaryopponents" class="table table-condensed table-bordered">
                         <tbody>
@@ -267,7 +247,7 @@
                     </table>
                 </div>
 
-                <div class="span4 offset1">
+                <div class="col-md-4 offset1">
                     <h3>opponentselo</h3>
 
                     <div style="width:400px;height:380px" id="opponentselo"></div>
@@ -315,6 +295,5 @@
             </table>
         </div>
     </div>
-
-    </div>
+</div>
 {% endblock %}
