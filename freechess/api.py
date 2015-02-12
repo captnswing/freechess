@@ -43,7 +43,7 @@ def elohist(request):
         'label': 'test',
         'data': zip(x, y)
     }
-    return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
+    return HttpResponse(json.dumps(response_data, default=dthandler), content_type="application/json")
 
 
 def monthlyresult(request):
@@ -90,7 +90,7 @@ def monthlyresult(request):
         },
         xticks[::2]
     ]
-    return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
+    return HttpResponse(json.dumps(response_data, default=dthandler), content_type="application/json")
 
 
 def opponentselo(request):
@@ -101,4 +101,4 @@ def opponentselo(request):
     response_data = {
         'data': sorted(hist.items())
     }
-    return HttpResponse(json.dumps(response_data, default=dthandler), mimetype="application/json")
+    return HttpResponse(json.dumps(response_data, default=dthandler), content_type="application/json")
