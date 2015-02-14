@@ -15,10 +15,12 @@ example call:
 import sys
 import time
 import datetime
+import argparse
 from collections import Counter
 
-#GAMEFIELDS = ChessGame._meta.get_all_field_names()
-GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white', 'timecontrol']
+# GAMEFIELDS = ChessGame._meta.get_all_field_names()
+GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white',
+              'timecontrol']
 
 
 def determineMostCommonPlayer(games):
@@ -47,13 +49,13 @@ def parsePGNfile(pgnfile):
     # determine the player that appears in both games
     player = determineMostCommonPlayer((g1, g2))
     # yield the parsed first two games
-    if g1['result'] != "*": # skip adjourned games
+    if g1['result'] != "*":  # skip adjourned games
         yield parsePGNgame(g1, player)
-    if g2['result'] != "*": # skip adjourned games
+    if g2['result'] != "*":  # skip adjourned games
         yield parsePGNgame(g2, player)
         # go through rest of the generator
     for g in allgames:
-        if g['result'] != "*": # skip adjourned games
+        if g['result'] != "*":  # skip adjourned games
             yield parsePGNgame(g, player)
 
 
@@ -76,14 +78,14 @@ def getGames(pgnfile):
     game = []
     previous_line_empty = False
     for line in pgnfile.readlines():
-        line = line.replace('\r', '').strip() # dos2unix, and strip
+        line = line.replace('\r', '').strip()  # dos2unix, and strip
         # check if we have an empty line
         if not line:
             # set previous_line_empty
             previous_line_empty = True
             # move on, next line please
             continue
-            # ok, we have a non-empty line
+        # ok, we have a non-empty line
         # check if previous line was empty and is now followed by line beginning with '['
         if previous_line_empty and line[0] == '[':
             # produce dict of so far accumulated lines in game list
@@ -93,9 +95,9 @@ def getGames(pgnfile):
         else:
             # just accumulate lines into the game list
             game.append(line)
-            # if the line had been empty, we'd never gotten here (yield/continue above)
+        # if the line had been empty, we'd never gotten here (yield/continue above)
         previous_line_empty = False
-        # don't forget to yield the very last game
+    # don't forget to yield the very last game
     yield gamelist2dict(game)
 
 
@@ -116,7 +118,7 @@ def parsePGNgame(game, player):
         game['blackelo'] = 1100
     if not ((game['white'] == player) or (game['black'] == player)):
         raise ValueError("player '%s' is not in the game" % player)
-        # sort out white and black
+    # sort out white and black
     if game['white'] == player:
         game['self_white'] = True
         game['self_elo'] = game['whiteelo']
@@ -127,7 +129,7 @@ def parsePGNgame(game, player):
         game['self_elo'] = game['blackelo']
         game['opponent_elo'] = game['whiteelo']
         game['opponent_name'] = game['white']
-        # set date
+    # set date
     y, m, d = game['date'].split('.')
     game['date'] = datetime.date(int(y), int(m), int(d))
     # delete unused keys
@@ -138,16 +140,16 @@ def parsePGNgame(game, player):
 
 
 if __name__ == "__main__":
-    pgnfile = '/Users/hoffsummer/.jin/captnswing.pgn'
-    args = sys.argv[1:]
-    if len(args) == 1:
-        pgnfile = args[0]
+    parser = argparse.ArgumentParser(description='parse JIN or eBoard PGN files')
+    parser.add_argument("pgnfile", nargs="?", default='/Users/hoffsummer/.jin/captnswing.pgn',
+                        help='the pgn file to parse (default: %(default)s)')
+    args = parser.parse_args()
 
     t0 = time.time()
     i = 0
-    print "parsing %s..." % pgnfile
-    allgames = parsePGNfile(open(pgnfile))
+    print "parsing %s..." % args.pgnfile
+    allgames = parsePGNfile(open(args.pgnfile))
     for i, game in enumerate(allgames):
-        game['game_nr'] = i+1
+        game['game_nr'] = i + 1
         print game
     print "parsed %s games in %.2f seconds" % (i, time.time() - t0)
