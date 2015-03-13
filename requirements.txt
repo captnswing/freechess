@@ -4,3 +4,5 @@ python-dateutil==2.4.0
 PyYAML==3.11
 dj-database-url==0.3.0
 gunicorn==19.0.0
+# https://github.com/docker/compose/releases/tag/1.1.0-rc1
+docker-compose==1.1.0-rc1

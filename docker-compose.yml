@@ -5,9 +5,9 @@ web:
   environment:
     - PYTHONPATH=.
     - DJANGO_SETTINGS_MODULE=freechess.settings.fig
-  command: python ./freechess/manage.py runserver 0.0.0.0:8000
+  command: python ./freechess/manage.py runserver 0.0.0.0:5000
   ports:
-    - "8000"
+    - "5000"
   links:
     - db
 #    - es
