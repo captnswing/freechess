@@ -9,18 +9,38 @@ Returns a list of all the played games. Each game is represented as a dictionary
 
 example call:
     from pgnparser import parsePGNfile
-    allgames = parsePGNfile(open('path_to_my_pgn_file'))
-    allgames = parsePGNfile(urllib2.urlopen('http://url/to/my_pgn_file'))
+    allgames = parsePGNfile('path_to_my_pgn_file')
 """
-import sys
 import time
 import datetime
 import argparse
 from collections import Counter
 
-# GAMEFIELDS = ChessGame._meta.get_all_field_names()
-GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white',
+# DJANGO_GAMEFIELDS = ChessGame._meta.get_all_field_names()
+DJANGO_GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white',
               'timecontrol']
+
+
+def segment_pgns(pgn_buffer):
+    current_game = []
+    for line in pgn_buffer.splitlines():
+        if line.startswith('[Event'):
+            if current_game:
+                yield current_game
+                current_game = []
+        current_game.append(line.strip())
+
+    if current_game:
+        yield current_game
+
+
+def parse_pgn(pgn_buffer):
+    for game in segment_pgns(pgn_buffer):
+        tuples = [l.strip('[]').split(' ', 1) for l in game if l and l.startswith('[')]
+        nontuples = [l for l in game if l and not l.startswith('[')]
+        parsed_game = dict([(k.lower().strip(), v.strip('"')) for (k, v) in tuples])
+        parsed_game['moves'] = " ".join([l for l in nontuples if not l.startswith('{')])
+        yield parsed_game
 
 
 def determineMostCommonPlayer(games):
@@ -41,7 +61,7 @@ def parsePGNfile(pgnfile):
     takes a pgn file object and returns a generator of parsed dictionaries for each completed game
     """
     # create game generator
-    allgames = getGames(pgnfile)
+    allgames = parse_pgn(open(pgnfile).read())
     # player is not yet determined
     # get the first two games from the generator
     g1 = allgames.next()
@@ -57,48 +77,6 @@ def parsePGNfile(pgnfile):
     for g in allgames:
         if g['result'] != "*":  # skip adjourned games
             yield parsePGNgame(g, player)
-
-
-def gamelist2dict(game):
-    """
-    takes a list of lines representing a pgn game and parses the list into a dict
-    """
-    # ahem. it's either this, or regexp
-    data = [tuple(elem.strip('[').strip(']').split(' ', 1)) for elem in game if "]" in elem]
-    data += [('comment', elem.split('}')[0].strip('{')) for elem in game if '{' in elem]
-    dictgame = dict([(k.lower(), v.strip('"')) for k, v in data])
-    return dictgame
-
-
-def getGames(pgnfile):
-    """
-    takes a pgn file object and iterates through all lines
-    returns a generator of pgn games as dictionaries
-    """
-    game = []
-    previous_line_empty = False
-    for line in pgnfile.readlines():
-        line = line.replace('\r', '').strip()  # dos2unix, and strip
-        # check if we have an empty line
-        if not line:
-            # set previous_line_empty
-            previous_line_empty = True
-            # move on, next line please
-            continue
-        # ok, we have a non-empty line
-        # check if previous line was empty and is now followed by line beginning with '['
-        if previous_line_empty and line[0] == '[':
-            # produce dict of so far accumulated lines in game list
-            yield gamelist2dict(game)
-            # reset game list
-            game = []
-        else:
-            # just accumulate lines into the game list
-            game.append(line)
-        # if the line had been empty, we'd never gotten here (yield/continue above)
-        previous_line_empty = False
-    # don't forget to yield the very last game
-    yield gamelist2dict(game)
 
 
 def parsePGNgame(game, player):
@@ -134,7 +112,7 @@ def parsePGNgame(game, player):
     game['date'] = datetime.date(int(y), int(m), int(d))
     # delete unused keys
     for key in game.keys():
-        if key not in GAMEFIELDS:
+        if key not in DJANGO_GAMEFIELDS:
             del game[key]
     return game
 
@@ -148,7 +126,7 @@ if __name__ == "__main__":
     t0 = time.time()
     i = 0
     print "parsing %s..." % args.pgnfile
-    allgames = parsePGNfile(open(args.pgnfile))
+    allgames = parsePGNfile(args.pgnfile)
     for i, game in enumerate(allgames):
         game['game_nr'] = i + 1
         print game
