@@ -2,7 +2,7 @@
 import datetime
 import time
 import unittest
-from freechess.pgnparser import parsePGNgame, determineMostCommonPlayer, parse_pgn
+from freechess.pgnparser import process_pgngame, determineMostCommonPlayer, parse_pgn
 
 WHITE_GAME = """[Event "ICS Rated Chess Match"]
 [Site "?"]
@@ -110,31 +110,31 @@ class TestPGNParser(unittest.TestCase):
 
     def test_white_game(self):
         white_game = list(parse_pgn(WHITE_GAME))[0]
-        result = parsePGNgame(white_game, 'captnswing')
+        result = process_pgngame(white_game, 'captnswing')
         self.assertEqual(result,
                          {'self_elo': 945, 'opponent_name': 'Kleeblatt', 'opponent_elo': 1133, 'self_white': True,
                           'result': '0-1', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_black_game(self):
         black_game = list(parse_pgn(BLACK_GAME))[0]
-        result = parsePGNgame(black_game, 'captnswing')
+        result = process_pgngame(black_game, 'captnswing')
         self.assertEqual(result, {'self_elo': 952, 'opponent_name': 'aidant', 'opponent_elo': 1015, 'self_white': False,
                                   'result': '1-0', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_adjourned_game(self):
         adjourned_game = list(parse_pgn(ADJOURNED_GAME))[0]
-        result = parsePGNgame(adjourned_game, 'captnswing')
+        result = process_pgngame(adjourned_game, 'captnswing')
         self.assertEqual(adjourned_game['result'], '*')
 
     def test_bad_game(self):
         bad_game = list(parse_pgn(BAD_GAME))[0]
-        result = parsePGNgame(bad_game, 'captnswing')
+        result = process_pgngame(bad_game, 'captnswing')
         self.assertEqual(result, {'opponent_name': 'aidant', 'opponent_elo': 1015, 'self_elo': 952, 'self_white': False,
                                   'result': '1-0', 'date': datetime.date(2004, 11, 19), 'timecontrol': '120+10'})
 
     def test_jin_game(self):
         jin_game = list(parse_pgn(JIN_GAME))[0]
-        result = parsePGNgame(jin_game, 'KingMarc')
+        result = process_pgngame(jin_game, 'KingMarc')
         self.assertEqual(result,
                          {'self_elo': 1064, 'opponent_name': 'pastablues', 'opponent_elo': 904, 'self_white': False,
                           'result': '0-1', 'date': datetime.date(2005, 9, 14), 'timecontrol': '120+12000'})

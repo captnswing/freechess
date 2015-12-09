@@ -8,8 +8,8 @@ Only completed games are included in the gamelist.
 Returns a list of all the played games. Each game is represented as a dictionary.
 
 example call:
-    from pgnparser import parsePGNfile
-    allgames = parsePGNfile('path_to_my_pgn_file')
+    from pgnparser import process_pgnfile
+    allgames = process_pgnfile('path_to_my_pgn_file')
 """
 import time
 import datetime
@@ -17,13 +17,22 @@ import argparse
 from collections import Counter
 
 # DJANGO_GAMEFIELDS = ChessGame._meta.get_all_field_names()
-DJANGO_GAMEFIELDS = ['comment', 'date', 'game_nr', 'opponent_elo', 'opponent_name', 'result', 'self_elo', 'self_white',
-              'timecontrol']
+DJANGO_GAMEFIELDS = [
+    'comment',
+    'date',
+    'game_nr',
+    'opponent_elo',
+    'opponent_name',
+    'result',
+    'self_elo',
+    'self_white',
+    'timecontrol'
+]
 
 
 def segment_pgns(pgn_buffer):
     current_game = []
-    for line in pgn_buffer.splitlines():
+    for line in pgn_buffer:
         if line.startswith('[Event'):
             if current_game:
                 yield current_game
@@ -35,7 +44,7 @@ def segment_pgns(pgn_buffer):
 
 
 def parse_pgn(pgn_buffer):
-    for game in segment_pgns(pgn_buffer):
+    for game in segment_pgns(pgn_buffer.splitlines()):
         tuples = [l.strip('[]').split(' ', 1) for l in game if l and l.startswith('[')]
         nontuples = [l for l in game if l and not l.startswith('[')]
         parsed_game = dict([(k.lower().strip(), v.strip('"')) for (k, v) in tuples])
@@ -56,7 +65,7 @@ def determineMostCommonPlayer(games):
     return most_common_player
 
 
-def parsePGNfile(pgnfile):
+def process_pgnfile(pgnfile):
     """
     takes a pgn file object and returns a generator of parsed dictionaries for each completed game
     """
@@ -70,16 +79,16 @@ def parsePGNfile(pgnfile):
     player = determineMostCommonPlayer((g1, g2))
     # yield the parsed first two games
     if g1['result'] != "*":  # skip adjourned games
-        yield parsePGNgame(g1, player)
+        yield process_pgngame(g1, player)
     if g2['result'] != "*":  # skip adjourned games
-        yield parsePGNgame(g2, player)
+        yield process_pgngame(g2, player)
         # go through rest of the generator
     for g in allgames:
         if g['result'] != "*":  # skip adjourned games
-            yield parsePGNgame(g, player)
+            yield process_pgngame(g, player)
 
 
-def parsePGNgame(game, player):
+def process_pgngame(game, player):
     """
     takes a pgn game dictionary and player name and remodels the dictionary
     returns a dictionary ready to be mapped to ChessGame django model
@@ -126,7 +135,7 @@ if __name__ == "__main__":
     t0 = time.time()
     i = 0
     print "parsing %s..." % args.pgnfile
-    allgames = parsePGNfile(args.pgnfile)
+    allgames = process_pgnfile(args.pgnfile)
     for i, game in enumerate(allgames):
         game['game_nr'] = i + 1
         print game
