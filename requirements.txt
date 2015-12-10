@@ -1,8 +1,6 @@
-Django==1.7.4
-psycopg2==2.6
-python-dateutil==2.4.0
-PyYAML==3.11
+django==1.8.4
+psycopg2==2.6.1
+python-dateutil==2.4.2
+pyyaml==3.11
 dj-database-url==0.3.0
-gunicorn==19.0.0
-# https://github.com/docker/compose/releases/tag/1.1.0-rc1
-docker-compose==1.1.0-rc1
+gunicorn==19.3.0
