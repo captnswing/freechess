@@ -1,50 +1,57 @@
 # -*- coding: utf-8 -*-
 # Django settings for freechess project.
-from os.path import join, abspath, dirname
-root = lambda *x: join(abspath(dirname(__file__)), '..', *x)
+import os
 
-ALLOWED_HOSTS = []
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+SECRET_KEY = '=s6(fo!)zvh0qo#3)mxo3_c!oaw(jo&plyr!mtpens)-h8j*51'
+ALLOWED_HOSTS = []
+
 ADMINS = ((u'Frank Hoffsümmer', 'frank.hoffsummer@gmail.com'),)
 APPEND_SLASH = True
 MANAGERS = ADMINS
 TIME_ZONE = 'Europe/Stockholm'
 LANGUAGE_CODE = 'en-us'
-SITE_ID = 1
 USE_I18N = True
 ADMIN_MEDIA_PREFIX = '/admin_media/'
-SECRET_KEY = '=s6(fo!)zvh0qo#3)mxo3_c!oaw(jo&plyr!mtpens)-h8j*51'
+
 MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.middleware.doc.XViewMiddleware',
+    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
 )
 
-# templates
-TEMPLATE_DIRS = (root("templates"),)
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.contrib.auth.context_processors.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.static',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Absolute path to the directory that holds user uploaded files
-MEDIA_ROOT = root("uploaded_pgnfiles")
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploaded_pgnfiles")
 
 # URL that handles the media served from MEDIA_ROOT
 MEDIA_URL = '/pgnfiles/'
 
 # installed apps
 ROOT_URLCONF = 'freechess.urls'
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,26 +62,6 @@ INSTALLED_APPS = (
     'freechess',
 )
 
-# staticfiles
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
-
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
-
-# Additional locations of static files
-STATICFILES_DIRS = (
-    root('static-media'),
-)
-
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)

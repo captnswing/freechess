@@ -6,15 +6,15 @@ from django.conf import settings
 
 class GameManager(models.Manager):
     def won_games(self):
-        return super(GameManager, self).get_query_set().filter((Q(self_white=True) & Q(result="1-0")) | (Q(self_white=False) & Q(result="0-1")))
+        return super(GameManager, self).get_queryset().filter((Q(self_white=True) & Q(result="1-0")) | (Q(self_white=False) & Q(result="0-1")))
     def lost_games(self):
-        return super(GameManager, self).get_query_set().filter((Q(self_white=True) & Q(result="0-1")) | (Q(self_white=False) & Q(result="1-0")))
+        return super(GameManager, self).get_queryset().filter((Q(self_white=True) & Q(result="0-1")) | (Q(self_white=False) & Q(result="1-0")))
     def drawn_games(self):
-        return super(GameManager, self).get_query_set().filter(result__contains="1/2")
+        return super(GameManager, self).get_queryset().filter(result__contains="1/2")
     def elo_trend(self):
-        return super(GameManager, self).get_query_set().values_list('game_nr', 'date', 'self_elo')
+        return super(GameManager, self).get_queryset().values_list('game_nr', 'date', 'self_elo')
     def elo_trend_flat(self):
-        return super(GameManager, self).get_query_set().values_list('self_elo', flat=True)
+        return super(GameManager, self).get_queryset().values_list('self_elo', flat=True)
 
 
 class ChessGame(models.Model):

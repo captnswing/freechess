@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os
+# settings/docker.py
 from .base import *  # noqa
 
 DATABASES = {
@@ -14,4 +14,3 @@ DATABASES = {
 
 # debug
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG

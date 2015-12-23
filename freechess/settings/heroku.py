@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # settings/heroku.py
-import os
-from .base import *
+from .base import *  # noqa
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
@@ -16,4 +15,3 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # heroku config:add DJANGO_DEBUG=true
 # heroku config:remove DJANGO_DEBUG
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', ''))
-TEMPLATE_DEBUG = DEBUG

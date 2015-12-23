@@ -1,3 +1,5 @@
+https://github.com/chadgh/chenopy
+jupyter/pandas
 https://github.com/sigurdga/django-jquery-file-upload
 
 remove heroku app

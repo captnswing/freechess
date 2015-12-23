@@ -1,6 +1,6 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # settings/local.py
-from .base import *
+from .base import *  # noqa
 
 DATABASES = {
     'default':
@@ -12,4 +12,3 @@ DATABASES = {
 
 # debug
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
