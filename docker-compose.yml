@@ -4,7 +4,7 @@ web:
     - .:/code/
   environment:
     - PYTHONPATH=.
-    - DJANGO_SETTINGS_MODULE=freechess.settings.docker
+    - DJANGO_SETTINGS_MODULE=freechess.settings
   command: bash -c "python ./freechess/manage.py migrate && python ./freechess/manage.py runserver 0.0.0.0:5000"
   ports:
     - "5000"
