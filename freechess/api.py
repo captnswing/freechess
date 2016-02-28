@@ -6,13 +6,14 @@ from django.http import HttpResponse
 from freechess.models import ChessGame
 from dateutil.relativedelta import relativedelta
 from dateutil import rrule
+from freechess.util import createhist
+
 
 # http://stackoverflow.com/q/1077414/41404
 # multiply by 1000 as Flot expects milliseconds
-from freechess.util import createhist
-
-dthandler = lambda obj: 1000 * time.mktime(obj.timetuple()) if (
-    isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date)) else None
+def dthandler(obj):
+    return 1000 * time.mktime(obj.timetuple()) if (
+        isinstance(obj, datetime.datetime) or isinstance(obj, datetime.date)) else None
 
 
 def elohist(request):
@@ -68,9 +69,9 @@ def monthlyresult(request):
     latestmonth = ChessGame.objects.latest().date.replace(day=1)
     sixteenMonthsEarlier = latestmonth + relativedelta(months=-14)
     months = [m.date() for m in rrule.rrule(rrule.MONTHLY, dtstart=sixteenMonthsEarlier, until=latestmonth)]
-    lost = [lost_games_permonth.get(month, 0) for month in months]
-    drawn = [drawn_games_permonth.get(month, 0) for month in months]
-    won = [won_games_permonth.get(month, 0) for month in months]
+    lost = [lost_games_permonth.get(m, 0) for m in months]
+    drawn = [drawn_games_permonth.get(m, 0) for m in months]
+    won = [won_games_permonth.get(m, 0) for m in months]
     xticks = zip(range(len(lost)), [m.strftime("%b '%y") for m in months])
     response_data = [
         {

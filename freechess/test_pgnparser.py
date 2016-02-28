@@ -124,6 +124,7 @@ class TestPGNParser(unittest.TestCase):
     def test_adjourned_game(self):
         adjourned_game = list(parse_pgn(ADJOURNED_GAME))[0]
         result = process_pgngame(adjourned_game, 'captnswing')
+        self.assertIsNotNone(result)
         self.assertEqual(adjourned_game['result'], '*')
 
     def test_bad_game(self):

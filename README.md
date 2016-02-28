@@ -1,12 +1,12 @@
 # docker-compose
 
     docker-compose up -d
-    docker-compose run web python ./freechess/manage.py syncdb --noinput
+    docker-compose run web python ./freechess/manage.py migrate
     docker-compose run web python ./freechess/manage.py loaddata admin_user
 
 # Google Container engine
 
-https://cloud.google.com/container-engine/docs/hello-wordpress
+    https://cloud.google.com/container-engine/docs/tutorials/hello-wordpress
 
 # Heroku bootstrap
 

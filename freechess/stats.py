@@ -128,9 +128,12 @@ def chessStats(request):
         else:
             myresult = game.result.split("-")[1]
         score[0] += 1
-        if myresult == '1': score[1] += 1
-        if myresult == '1/2': score[2] += 1
-        if myresult == '0': score[3] += 1
+        if myresult == '1':
+            score[1] += 1
+        if myresult == '1/2':
+            score[2] += 1
+        if myresult == '0':
+            score[3] += 1
         most_frequent_opponents[game.opponent_name] = score
 
     most_frequent_opponents = [(v, k) for k, v in most_frequent_opponents.items()]
@@ -148,5 +151,5 @@ def chessStats(request):
         'lost_tally': lost_tally,
         'most_frequent_opponents': most_frequent_opponents[:15],
         'strongest_opponents_won': strongest_opponents_won[:15],
-        'last100games': allgames.reverse()[number_of_games-100:number_of_games]
+        'last100games': allgames.reverse()[number_of_games - 100:number_of_games]
     }, context_instance=RequestContext(request))
