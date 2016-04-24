@@ -3,8 +3,10 @@ MAINTAINER Frank Hoffsümmer "frank.hoffsummer@gmail.com"
 ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN mkdir /code
-COPY requirements.txt /code/
+VOLUME /code
+
 WORKDIR /code
+
+COPY requirements.txt /code/
 
 RUN pip install -r requirements.txt
