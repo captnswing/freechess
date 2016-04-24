@@ -7,15 +7,17 @@ services:
     environment:
       - PYTHONPATH=.
       - DJANGO_SETTINGS_MODULE=freechess.settings
-    command: bash -c "python ./freechess/manage.py migrate && python ./freechess/manage.py runserver 0.0.0.0:5000"
+    command: python ./freechess/manage.py runserver 0.0.0.0:5000
     ports:
       - "5000"
-    links:
-      - db
-  db:
+    depends_on:
+      - postgres
+  postgres:
     image: postgres:latest
     ports:
       - "5432"
     environment:
-      - USER=postgres
-      - DB=postgres
+      - POSTGRES_DB=freechessdb
+      - POSTGRES_USER=freechess
+      - POSTGRES_PASSWORD=freechess
+      - PGPASSWORD=freechess

@@ -4,9 +4,6 @@ ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND noninteractive
 
 VOLUME /code
-
 WORKDIR /code
-
-COPY requirements.txt /code/
-
+COPY requirements.txt /code/requirements.txt
 RUN pip install -r requirements.txt
